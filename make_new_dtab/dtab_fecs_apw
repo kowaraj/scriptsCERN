@@ -1,0 +1,19 @@
+#!/bin/csh
+alias printError 'set ev = $status && echo "error :" + $ev && exit $ev'
+
+echo ""
+echo "Dtab on APW frontends. "
+echo "=================================="
+echo ""
+foreach FEC_EXT (cfv-ux45-apw1 cfv-ux45-apw2 cfv-sr4-apwb1 cfv-sr4-apwb2)
+	echo ""
+	echo $FEC_EXT
+	echo "-----------------"
+	echo ""
+	pushd `pwd`
+		cd /ps/dsc/src/lhc/$FEC_EXT/ || printError
+		yes | make transfer.ref -j 10
+		yes | make new_dtab -j 10
+	popd
+end
+

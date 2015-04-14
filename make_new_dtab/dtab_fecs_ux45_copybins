@@ -1,0 +1,20 @@
+#!/bin/csh
+setenv FEC_RADICAL cfv-ux45-
+alias printError 'set ev = $status && echo "error :" + $ev && exit $ev'
+
+echo ""
+echo "Make bin.old.v7 on UX45 frontends. "
+echo "=================================="
+echo ""
+foreach FEC_EXT (apw1 apw2 acsfccg)
+	echo ""
+	echo $FEC_RADICAL$FEC_EXT
+	echo "-----------------"
+	echo ""
+	pushd `pwd`
+		cd /acc/dsc/lhc/$FEC_RADICAL$FEC_EXT/bin || printError
+		cp ALLVTU_R.old ALLVTU_R.old.$1
+		cp ALLVTU_S.old ALLVTU_S.old.$1
+	popd
+end
+

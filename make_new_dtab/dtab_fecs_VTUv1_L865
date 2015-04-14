@@ -1,0 +1,19 @@
+#!/bin/csh
+alias printError 'set ev = $status && echo "error :" + $ev && exit $ev'
+
+echo ""
+echo "Dtab on BA3 frontends. "
+echo "=================================="
+echo ""
+foreach FEC_EXT (cfv-ba3-allion1 cfv-ba3-allproton1 cfv-ba3-alldiag1 cfv-ba3-allbc1 cfv-ba3-allbc3 cfv-ba3-allsync1)
+	echo ""
+	echo $FEC_EXT
+	echo "-----------------"
+	echo ""
+	pushd `pwd`
+		cd /acc/dsc/src/sps/$FEC_EXT/ || printError
+		yes | make transfer.ref -j 10
+		yes | make new_dtab CPU=L865 -j 10
+	popd
+end
+

@@ -1,0 +1,21 @@
+#!/bin/csh
+setenv FEC_RADICAL cfv-ux45-acsc
+alias printError 'set ev = $status && echo "error :" + $ev && exit $ev'
+
+echo ""
+echo "Dtab on UX45 frontends. "
+echo "=================================="
+echo ""
+foreach FEC_EXT (1b1t 2b1t 3b1t 4b1t 5b1t 6b1t 7b1t 8b1t 1b2t 2b2t 3b2t 4b2t 5b2t 6b2t 7b2t 8b2t)
+	echo ""
+	echo $FEC_RADICAL$FEC_EXT
+	echo "-----------------"
+	echo ""
+	
+	pushd `pwd`
+		cd /acc/dsc/src/lhc/$FEC_RADICAL$FEC_EXT/ || printError
+		yes | make transfer.ref 
+		yes | make new_dtab -j 9
+	popd
+end
+

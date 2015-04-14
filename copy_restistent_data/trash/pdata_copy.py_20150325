@@ -1,0 +1,64 @@
+#!/usr/bin/python
+
+import argparse
+import os
+import subprocess
+import sys
+import time
+import operator
+import re
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('classname', metavar='Fesa class name', nargs='+',
+                                        help='the asdfas')
+parser.add_argument('fecname', metavar='cfv-ux45-ascs1b1t', nargs='+',
+                                        help='the asdf asdfas')
+parser.add_argument('fecpath', metavar='/acc/dsc/lhc/', nargs='+',
+                                        help='the asdf asdfas')
+
+args = parser.parse_args()
+print "args = ", args
+fesa_class_name = args.classname[0]
+fec = args.fecname[0]
+fec_path = args.fecpath[0]
+print "name = ", fesa_class_name
+print "fec = ", fec
+print "fec path = ", fec_path
+
+
+src_path_pre = fec_path
+dst_path_pre = "./test/"
+
+pf_name_xml = fesa_class_name+"PersistentData.xml"
+
+
+src_files = os.path.join(src_path_pre, fec, 'data', pf_name_xml)+'*'
+dst_path = os.path.join(dst_path_pre, fec, 'data')+'/'
+
+subprocess.call(["mkdir", "-p", dst_path])
+
+copy_cmd = "cp -p "+src_files+" "+dst_path
+print "copying: ", copy_cmd
+subprocess.call(copy_cmd, shell=True)
+
+
+print "Done."
+
+        
+    
+
+
+                
+                
+            
+
+
+
+        
+
+
+
+
+
+
+

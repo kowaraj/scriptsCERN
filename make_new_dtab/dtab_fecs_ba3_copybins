@@ -1,0 +1,20 @@
+#!/bin/csh
+setenv FEC_RADICAL cfv-ba3-
+alias printError 'set ev = $status && echo "error :" + $ev && exit $ev'
+
+echo ""
+echo "Make bin.old.v7 on BA3 frontends. "
+echo "=================================="
+echo ""
+foreach FEC_EXT (allion1 allproton1 alldiag1)
+	echo ""
+	echo $FEC_RADICAL$FEC_EXT
+	echo "-----------------"
+	echo ""
+	pushd `pwd`
+		cd /acc/dsc/sps/$FEC_RADICAL$FEC_EXT/bin || printError
+		cp ALLVTU_R.old ALLVTU_R.old.$1
+		cp ALLVTU_S.old ALLVTU_S.old.$1
+	popd
+end
+

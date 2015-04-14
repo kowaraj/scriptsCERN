@@ -1,0 +1,20 @@
+#!/bin/csh
+setenv FEC_RADICAL cfv-sr4-
+alias printError 'set ev = $status && echo "error :" + $ev && exit $ev'
+
+echo ""
+echo "Dtab on SR4 frontends. "
+echo "=================================="
+echo ""
+foreach FEC_EXT (adthb1 adthb2 adtvb1 adtvb2 adttest)
+	echo ""
+	echo $FEC_RADICAL$FEC_EXT
+	echo "-----------------"
+	echo ""
+	pushd `pwd`
+		cd /acc/dsc/src/lhc/$FEC_RADICAL$FEC_EXT || printError
+		yes | make transfer.ref 
+		yes | make new_dtab -j 10
+	popd
+end
+
