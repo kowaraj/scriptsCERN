@@ -22,6 +22,13 @@ try:
 except ImportError:
     from . import interactive
 
+from time import sleep
+import signal
+import sys
+def sigterm_handler(_signo, _stack_frame):
+    sys.exit(0)
+signal.signal(signal.SIGTERM, sigterm_handler)
+                    
 
 CALL_TOP_PERIOD = 10.0 # [sec] call top over ssh every ... sec
 CPU_THRESHOLD = 15. # [%] send an alert if CPU load is higher than ... %
@@ -102,6 +109,18 @@ username = 'apashnin'
 hostname = fec_name
 
 
+log_file = open('log_' +fesa_class_name+ '_' +fec_name, 'w')
+#fault_file = open('/user/apashnin/log_error/fault_TopOnFec.log', 'w')
+#fault_file = open('/dfs/Websites/a/apashnin/log_error/fault_TopOnFec.log', 'w')
+fault_file = open('/dfs/Websites/a/apashnin/log_error/fault_TopOnFec.log', 'a')
+
+# mark the start of loggin in the file
+curr_ts = time.strftime('%Y.%m.%d %H:%M:%S', time.localtime(time.time()))
+start_header = 'Started at '+ curr_ts+ ' on fec: '+fec_name+ ' (watching '+ fesa_class_name+ ')\n'
+fault_file.write(start_header)
+fault_file.flush()
+
+
 # now, connect and use paramiko Client to negotiate SSH2 across the connection
 try:
     client = paramiko.SSHClient()
@@ -136,17 +155,6 @@ try:
     m_exp = PID_ + USER_ + PR_ + NI_ + VIRT_ + RES_ + SHR_ + S_ + CPU_ + MEM_ + TIME_ + CMD_
     print 'ext to match = ', m_exp
             
-
-    log_file = open('log_' +fesa_class_name+ '_' +fec_name, 'w')
-    #fault_file = open('/user/apashnin/log_error/fault_TopOnFec.log', 'w')
-    #fault_file = open('/dfs/Websites/a/apashnin/log_error/fault_TopOnFec.log', 'w')
-    fault_file = open('/dfs/Websites/a/apashnin/log_error/fault_TopOnFec.log', 'a')
-
-    # mark the start of loggin in the file
-    curr_ts = time.strftime('%Y.%m.%d %H:%M:%S', time.localtime(time.time()))
-    start_header = 'Started at '+ curr_ts+ ' on fec: '+fec_name+ ' (watching '+ fesa_class_name+ ')\n'
-    fault_file.write(start_header)
-    fault_file.flush()
 
     # Wait for the command to terminate
     while not stdout.channel.exit_status_ready():
@@ -198,9 +206,13 @@ except Exception as e:
     sys.exit(1)
 
     
+finally:
+    curr_ts = time.strftime('%Y.%m.%d %H:%M:%S', time.localtime(time.time()))
+    stop_header = 'Stopped at '+ curr_ts+ ' on fec: '+fec_name+ ' (watched '+ fesa_class_name+ ')\n'
+    fault_file.write(stop_header)
+    fault_file.flush()
 
-        
-    
+           
 
 
                 
