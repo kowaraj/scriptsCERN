@@ -1,5 +1,23 @@
 #!/usr/bin/python
 
+'''
+1. ssh to fec
+2. execute: "top -b -d "+str(CALL_TOP_PERIOD)
+3. reads output and searches for 
+    m_exp = PID_ + USER_ + PR_ + NI_ + VIRT_ + RES_ + SHR_ + S_ + CPU_ + MEM_ + TIME_ + CMD_
+4. parse the match
+    res_name = m.group(12)
+    m2 = re.search('('+fesa_class_name+')(.+)',res_name)
+5. check the CPU-load for a threshold
+6. send an SMS if higher
+
+Mods:
+
+- Don't send SMS more often than once in 15min
+
+- ..
+'''
+
 import argparse
 import os
 import subprocess
