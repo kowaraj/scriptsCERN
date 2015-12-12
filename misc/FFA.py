@@ -52,7 +52,12 @@ print " FTW1' = 2**32 - FTW1"
 print " FTW2' = 2**33 - 2**20 * H_AVG - FTW1'"
 x = pow(2,33)-pow(2,20)*H_AVG
 print " FTW2' + FTW1' = 2**33 - 2**20 * H_AVG ==> x = ", hex(int(round(x)))
+print " |-----------------------------------------| "
+print " | FTW2'+FTW1' : 0xDF400000 or 0xDD300000) | "
+print " |-----------------------------------------| "
 print " Then, for FTW1' = FTW2 ==> x/2 ", hex(int(round(x/2)))
-print " (one of: 0x6FA00000 or 0x6E980000) ?"
+print " |-----------------------------------------| "
+print " | Average     : 0x6FA00000 or 0x6E980000) | "
+print " |-----------------------------------------| "
 
 
