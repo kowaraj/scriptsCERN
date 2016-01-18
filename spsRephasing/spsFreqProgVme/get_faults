@@ -1,0 +1,18 @@
+echo "faults1: "
+read_vme -a 60000c -w 16 -v
+
+echo "faults2: (bp_codec_errors)"
+read_vme -a 60000e -w 16 -v
+
+echo "faults3: (bp_codec_flags)"
+read_vme -a 600010 -w 16 -v
+
+echo "faults4: (fprog_modes)"
+read_vme -a 600012 -w 16 -v
+
+echo "debug stat: " 
+read_vme   -a 600016 -w 16 -v 
+
+echo "debug faults: "
+read_vme  -a 600018 -w 16 -v 
+

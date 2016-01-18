@@ -1,0 +1,58 @@
+#!/bin/sh
+
+
+#echo -e "Enter Slave DDS slot number: \c" 
+#read SlaveSlot 
+
+SlaveSlot=7
+
+
+#####################################################################################################
+
+
+echo "set SyncSELFP to 1"
+  Command=$SlaveSlot"00012 1 1010"
+  writevme $Command
+
+echo "set DDS Data Source to VME"
+  Command=$SlaveSlot"00012 1 2000"
+  writevme $Command
+
+echo slave sync enable. This must be done before anything on the FPGA
+echo FR2 0000 0000 0000 0000 0000 0000 1000 0000
+  Command=$SlaveSlot"00048 3 0000 0080 0002"
+  writevme $Command
+
+echo IO_Update DDS
+  Command=$SlaveSlot"00000 1 0202"
+  writevme $Command
+
+echo slave sync disable.
+echo FR2 0000 0000 0000 0000 0000 0000 0000 0000
+  Command=$SlaveSlot"00048 3 0000 0000 0002"
+  writevme $Command
+
+echo IO_Update DDS
+  Command=$SlaveSlot"00000 1 0202"
+  writevme $Command
+
+echo "set DDS Data Source to SPS"
+  Command=$SlaveSlot"00012 1 2020"
+  writevme $Command
+
+# FESA does the following out of SyncDDS procedure
+echo Trigger FrevSync for FTWToggle with BP Frev, ddsReset.cpp on FESA is made on another timing, try to understand this
+  Command=$SlaveSlot"00000 1 0404"
+  writevme $Command
+
+echo Set FrevPHase Offset for FTWToggle
+  Command=$SlaveSlot"00062 1 0000"
+  writevme $Command
+
+echo Set RFON and RFOFF Timing
+  Command=$SlaveSlot"0001e 2 0025 0350"
+  writevme $Command
+
+
+############
+echo "Automatic Sync SlaveDDS enabled."

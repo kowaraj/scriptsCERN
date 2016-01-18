@@ -1,0 +1,2 @@
+write_vme  -a 60004e -d 0600 -w 16 -v 
+read_vme   -a 60004e         -w 16 -v

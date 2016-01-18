@@ -1,0 +1,131 @@
+#!/bin/sh
+if [ $# -eq 1 ]
+then
+  MasterSlot=$1
+#  MasterSlot=9
+
+echo "Start Master DDS V2-0 initialisation"
+echo CW Test starting
+
+echo Firmware
+ReadFirmware.sh $MasterSlot
+
+# Put this command on FESA
+echo CSR all channel select reg on bits [7..4] to reset 
+echo CH0 only 1111 0000  0x000000F0
+  Command=$SlaveSlot"00050 3 0000 00F0 0000"
+  writevme $Command
+
+echo Reset DDS
+Command=$MasterSlot"00000 1 0101"
+  writevme $Command
+
+#sleep 2
+
+echo Clear FTW Faults on Control 3
+  Command=$MasterSlot"00014 1 0808"
+  writevme $Command
+
+echo Read Status Word I bit 4 is LockMH50 bit 5 is LockMHz125 bit 6 is Lock LO Synth must result on xx3x
+Command=$MasterSlot"00006 1"
+  readvme $Command
+
+
+
+echo "set DDS Data Source to VME"
+  Command=$MasterSlot"00012 1 0400"
+  writevme $Command
+
+ echo CSR select CH0 0001 0000 
+  Command=$MasterSlot"00050 3 0000 0010 0000"
+  writevme $Command
+ echo CFR init 0000 0011 0000 0000 cosinus
+  Command=$MasterSlot"00050 3 0000 0300 0003"
+  writevme $Command
+ echo CTW0 init
+  Command=$MasterSlot"00050 3 3437 F0E5 0004"
+#  Command=$MasterSlot"00050 3 3437 F0E6 0004"
+#  Command=$MasterSlot"00050 3 32CC 0F40 0004"
+#  Command=$MasterSlot"00050 3 32e8 ece3 0004"
+  writevme $Command
+#echo CPW0 init 25 deg
+ #Command=$MasterSlot"00050 3 0000 0471 0005"
+ #writevme $Command
+# echo ACR init 0000 0000 0001 0011 1111 1111
+#  Command=$MasterSlot"00050 3 0000 13FF 0006"
+#  Command=$MasterSlot"00050 3 0000 0000 0006"
+#  writevme $Command
+
+############
+#echo IO_Update DDS
+#  Command=$MasterSlot"00000 1 0202"
+#  writevme $Command
+
+###########
+ echo CSR select CH1 0010 0000
+  Command=$MasterSlot"00050 3 0000 0020 0000"
+  writevme $Command
+ echo CFR init 0000 0011 0000 0001 sinus
+  Command=$MasterSlot"00050 3 0000 0301 0003"
+  writevme $Command
+ echo CTW0 init
+  Command=$MasterSlot"00050 3 3437 F0E5 0004"
+#  Command=$MasterSlot"00050 3 3437 F0E6 0004"
+#  Command=$MasterSlot"00050 3 32Cc 0F40 0004"
+#  Command=$MasterSlot"00050 3 32e8 ece3 0004"
+  writevme $Command
+#echo CPW0 init 25 deg
+ #Command=$MasterSlot"00050 3 0000 0471 0005"
+ #writevme $Command
+# echo ACR init 0000 0000 0001 0011 1111 1111
+#  Command=$MasterSlot"00050 3 0000 13FF 0006"
+#  Command=$MasterSlot"00050 3 0000 0000 0006"
+  writevme $Command
+############
+echo IO_Update DDS
+  Command=$MasterSlot"00000 1 0202"
+  writevme $Command
+
+
+#sleep 2
+
+
+echo "set minimum FTW value allowed"
+  Command=$MasterSlot"0002a 2 2e00 0005"
+  writevme $Command
+
+echo "set maximum FTW value allowed"
+  Command=$MasterSlot"0002e 2 4200 0000"
+  writevme $Command
+
+echo ADC Gain define
+#  Command=$MasterSlot"00016 1 0010"
+  Command=$MasterSlot"00016 1 0005"
+  writevme $Command
+
+echo ADC Offset define
+  Command=$MasterSlot"00018 1 0000"
+#  Command=$MasterSlot"00018 1 015f"
+#  Command=$MasterSlot"00018 1 0100"
+#  writevme $Command
+
+echo Serial Gain define
+  Command=$MasterSlot"0001a 2 000F 3B38"
+  writevme $Command
+
+echo Serial Offset define
+  Command=$MasterSlot"0001e 2 36E1 CB6E"
+  writevme $Command
+
+#sleep 1
+echo "set DDS Data Source to SPS"
+  Command=$MasterSlot"00012 1 0404"
+  writevme $Command
+
+
+echo Initialisation MasterDDS finished.
+############
+echo MasterDDS finished.
+else
+  echo -e "\aUsage MasterDDS.sh Slot"
+fi

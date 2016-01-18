@@ -1,0 +1,7 @@
+#!/bin/sh
+
+clear
+echo Restarting FESA SlaveDDS
+wreboot -N ALLRfSlaveDds_R ALLRfSlaveDds_S
+
+echo done

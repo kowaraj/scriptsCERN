@@ -1,0 +1,1 @@
+read_vme -a 60006e -w16 -v -l2

@@ -1,0 +1,8 @@
+Tests in the lab
+
+2012.11.26
+
+The MasterSlaveDDS Loop closes but very dependent on Level of the 200.50959MHz Synthetizer.
+
+Output			: 3 dBm
+MasterDDS 

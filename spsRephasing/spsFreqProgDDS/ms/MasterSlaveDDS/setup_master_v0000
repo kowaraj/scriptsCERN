@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# 00.00
+
+echo "WrSynth"
+writevme 300020 2 004f f120
+writevme 300020 2 0030 0009
+sleep 1
+writevme 300020 2 0040 0612
+
+echo "Gain factor for ADC input"
+writevme 300014 1 0050
+echo "Offset for ADC input"
+writevme 300016 1 015f
+echo "Gain factor for SPS input"
+writevme 300018 2 000f 3b38
+echo "Offset for SPS input"
+writevme 30001c 2 36e1 cb6e
+
+echo "set maximum value allowed"
+writevme 30002c 2 4200 0000
+echo "set minimum value allowed"
+writevme 300030 2 2e00 0005
+
+echo "2 Reset"
+writevme 300024 1 0001
+writevme 300050 2 3333 3333
+writevme 300024 1 0001
+writevme 300050 2 3333 3333
+
+echo "Reset"
+writevme 300024 1 0001
+
+echo "Control I work conditions"
+writevme 300000 1 ff01

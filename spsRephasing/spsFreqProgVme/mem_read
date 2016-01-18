@@ -1,0 +1,5 @@
+echo "acq_status: 8000 - released, c000 - frozen"
+read_vme  -a 600108 -w 16 -v -l 1
+echo "mem: "
+read_vme  -a 680000 -w 16 -v -l 14
+

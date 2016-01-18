@@ -1,0 +1,175 @@
+#!/bin/sh
+echo CW Test starting
+if [ $# -eq 1 ]
+then
+  Slot=$1
+
+echo Start VTU
+FrevGen.sh D
+
+echo Firmware
+ReadFirmware.sh $Slot
+
+echo Reset DDS
+Command=$Slot"00000 1 0101"
+  writevme $Command
+
+
+
+echo Read Status Word I bit 4 is LockMH50 bit 5 is LockMHz125 must result on xx3x
+Command=$Slot"00006 1"
+  readvme $Command
+
+
+echo "trigger FrevSync"
+  Command=$Slot"00000 1 0404"
+  writevme $Command
+
+echo "set DDS Data Source to VME"
+  Command=$Slot"00012 1 2000"
+  writevme $Command
+
+
+echo Set FrevPHase Offset
+  Command=$Slot"00062 1 ffff"
+  writevme $Command
+
+echo Set RFON and RFOFF Timing from hex 1 to 200
+  Command=$Slot"0001e 2 0025 0150"
+  writevme $Command
+
+echo CSR channel select reg on bits [7..4]
+echo CH0 CH1  0011 0000 hex 0000 0030
+echo CH0 only 0001 0000 hex 0000 0001
+  Command=$Slot"00048 3 0000 0010 0000"
+  writevme $Command
+
+echo FR1 init 4-Level Modulation bits [9,8] can only work with 2 channels so we chose channel 0 channel 1.
+echo See Table 7 and Table 10 of datasheet
+echo 0000 0000 0000 0000 0000 0011 0000 0000 16 level
+echo 0000 0000 0000 0000 0000 0001 0000 0000 4 level
+  Command=$Slot"00048 3 0000 0100 0001"
+  writevme $Command
+
+echo Do we need Multidevice Sync Slave enable ? hex 0000 0080 in that case.
+echo FR2 0000 0000 0000 0000 0000 0000 1000 0000
+  Command=$Slot"00048 3 0000 0000 0002"
+  writevme $Command
+
+ echo CFR init 1000 0000 0000 0000 0011 0000 0000 hex 0080 0300 cosinus [0], DAC full scale [9,8] and Freq Modulation [23,22]
+#  Command=$Slot"00048 3 0080 0300 0003"
+  Command=$Slot"00048 3 0080 0300 0003"
+  writevme $Command
+
+
+echo IO_Update DDS
+  Command=$Slot"00000 1 0202"
+  writevme $Command
+
+ echo CTW0 init
+  Command=$Slot"00048 3 6E5F 5EA2 0004"
+  writevme $Command
+
+
+echo IO_Update DDS
+  Command=$Slot"00000 1 0202"
+  writevme $Command
+
+ echo CTW1 init
+  Command=$Slot"00048 3 70E0 A15E 000A"
+  writevme $Command
+
+
+echo IO_Update DDS
+  Command=$Slot"00000 1 0202"
+  writevme $Command
+
+ echo CTW2 init
+  Command=$Slot"00048 3 745A 46EE 000B"
+  writevme $Command
+
+echo IO_Update DDS
+  Command=$Slot"00000 1 0202"
+  writevme $Command
+
+ echo CTW3 init
+  Command=$Slot"00048 3 6AE5 B912 000C"
+  writevme $Command
+
+
+
+
+# echo ACR init 0000 0000 0001 0011 1111 1111
+#  Command=$Slot"00048 3 0000 13FF 0006"
+#  Command=$Slot"00048 3 0000 0000 0006"
+#  writevme $Command
+
+###########
+
+echo IO_Update DDS
+  Command=$Slot"00000 1 0202"
+  writevme $Command
+
+
+echo Average Frequency on DDS Channel 1 Output
+echo CSR select CH1 0010 0000
+  Command=$Slot"00048 3 0000 0040 0000"
+  writevme $Command
+
+echo DDS Register select CTW0
+  Command=$Slot"00048 3 6FA0 0000 0004"
+  writevme $Command
+
+echo IO_Update DDS
+  Command=$Slot"00000 1 0202"
+  writevme $Command
+
+
+
+
+#echo pause
+#sleep 5
+
+#echo Change Profile Pin CReg4 to CTW1
+#echo 0001 0000 0001 0000
+#  Command=$Slot"0005E 1 F020"
+#  writevme $Command
+
+#echo pause
+#sleep 5
+#
+#echo Change Profile Pin CReg4 to CTW2
+#echo 0010 0000 0010 0000
+#  Command=$Slot"0005E 1 F010"
+#  writevme $Command
+
+#echo pause
+#sleep 5
+
+
+#echo Change Profile Pin CReg4 to CTW3
+#echo 0011 0000 0011 0000
+#  Command=$Slot"0005E 1 F030"
+#  writevme $Command
+
+#echo pause
+#sleep 5
+
+
+#echo Change Profile Pin back to CTW0
+#  Command=$Slot"0005e 1 F000"
+#  writevme $Command
+
+# sleep 2
+
+echo "set DDS Data Source to SPS"
+  Command=$Slot"00012 1 2020"
+  writevme $Command
+
+
+
+############
+echo LoadSlaveDDS finished.
+else
+  echo -e "\aUsage SlaveDDS.sh Slot"
+fi

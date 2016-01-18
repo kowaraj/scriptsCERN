@@ -1,0 +1,5 @@
+write_vme   -a 67ffe2 -w 16 -v -d 0020
+write_vme   -a 67ffe6 -w 16 -v -d 0010
+write_vme   -a 67ffea -w 16 -v -d 0010
+write_vme   -a 67ffee -w 16 -v -d 0005
+

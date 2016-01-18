@@ -1,0 +1,4 @@
+addr="60010e"
+write_vme -a $addr  -w 16 -v -d 4040
+read_vme  -a 600108 -w 16 -v -l 1
+
