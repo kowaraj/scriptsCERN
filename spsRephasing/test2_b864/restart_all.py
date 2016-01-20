@@ -1,5 +1,20 @@
 #!/user/mojedasa/python/Python-2.7.11/python
 
+'''
+mods:
+- 20160119 - added fpdds, mdds
+- 20160118 - open synchro loop moved before sdds re-init
+- 20160118 - original version
+
+'''
+import fpdds
+fpdds_i = fpdds.fpdds(4)
+import mdds
+mdds_i = mdds.mdds(5)
+import sdds
+sdds_i = sdds.sdds(6)
+
+
 
 #Cold reset
 print ''
@@ -7,34 +22,28 @@ print 'Do a Cold reset on the crate...'
 raw_input("ok?")
 
 
+
 ### Seq. step 1
 
-print ''
+print '=============================='
 print 'Before injection (fpDDS reset)'
+fpdds_i.init_module()
+raw_input("ok?")
 
-
-
-print ''
+print '============================='
 print 'Before injection (mDDS reset)'
-import mdds
-mdds_i = mdds.mdds(5)
-
-
-print ''
-print 'Before injection (Ions Slave DDS reset)'
-
-import sdds
-print ''
-print "Running: sdds.init_dds_3 on slot 6"
-sdds_i = sdds.sdds(6)
-sdds_i.init_dds_3()
-raw_input("done?")
-
-
-print ''
+mdds_i.init_module()
+raw_input("ok?")
 print 'Synchro loop OFF'
 mdds_i.setADCGain(0) #zero gain to simulate the open loop
 raw_input("ok?") #check the results
+
+print '======================================='
+print 'Before injection (Ions Slave DDS reset)'
+sdds_i.init_module()
+raw_input("ok?")
+
+
 
 
 
@@ -49,7 +58,7 @@ print 'ok.'
 
 print ''
 print 'Synchro loop ON'
-mdds_i.setADCGain(5) #simulate the closed loop
+mdds_i.setADCGain(30) #simulate the closed loop
 raw_input("ok?") #check the results
 
 
@@ -75,6 +84,7 @@ print ''
 print 'Frequency toggling resync on Frev'
 sdds_i._doSyncToggleToBPFrev()
 raw_input("ok?")
+
 
 ### Seq. step 7
 
