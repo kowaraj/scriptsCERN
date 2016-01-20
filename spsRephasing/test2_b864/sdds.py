@@ -1,18 +1,18 @@
 import sys
 from time import sleep
 import spsSlaveDDSMap
+print 'reload(sdds); cs = sdds.sdds(6)'
+print 'cs.init_module(6)'
 
 '''
 - 20160111 - fixed FTW_AVG from 200 to 200.22
 
-'''
-
-print 'import sdds'
-print 's = sdds.sdds(6)'
 print 's.setup_dds_freq("RF1", 200, 205, 210, 215)'
 print 's.setup_dds_freq("RF2", 202, 207, 212, 217)'
 print 'import spsSlaveDDSMap'
 print 'm = spsSlaveDDSMap.Module.slot(6)'
+'''
+
 
 '''
 RF1 (ch1, scope_ch3)
@@ -55,6 +55,18 @@ class sdds(object):
         REG_CW1 = 0xa
         REG_CW2 = 0xb
         REG_CW3 = 0xc
+
+        def sdds_ftw1p2fcav(self, ftw1p):
+                frev = 43286.133 #354.6MHz clock (from mDDS)
+                f = (pow(2,32) - ftw1p)*frev/pow(2,19)
+                print 'fcav = ', f, ' for ftw1p = ', hex(ftw1p)
+                return f
+
+        def sdds_FTW2p(self, ftw1p):
+                ftw2p = int( pow(2,33) - pow(2,20)*4620 - ftw1p )
+                print 'ftw2p = ', hex(ftw2p), ' for ftw1p = ', hex(ftw1p)
+                self.sdds_ftw1p2fcav(ftw1p)
+                return ftw2p
 
         def _doUpdateDDSIO(self):
                 # UpdateDDS IO
@@ -313,8 +325,9 @@ class sdds(object):
 
                 self._enaVmeAccessToDDS(0) # to FPGA
 
-        def init_dds_3(self):
-                print '3 Initializing DDS...'
+        def init_module(self):
+                print 'Initializing sDDS module'
+                print 'Firmware version: ', self.m.firmwareVersion
                 self._enaVmeAccessToDDS(1) # to VME
                 self.setup_data()
 
