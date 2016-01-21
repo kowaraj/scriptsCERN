@@ -15,10 +15,14 @@ import sdds
 sdds_i = sdds.sdds(6)
 
 
-
-#Cold reset
 print ''
 print 'Do a Cold reset on the crate...'
+raw_input("ok?")
+
+
+print 'Send IRQ1 to DSP on fpDSP module (slot3, control2, bit7)'
+from subprocess import call
+call(['write_vme', '-w16', '-v', '-a30007a', '-d0x8080'])
 raw_input("ok?")
 
 

@@ -15,7 +15,7 @@ Mods:
 '''
 
 class mdds(object):
-        C_FTWOffset_fp2mDDS = 0x1BA5E354 #from mdds firmware
+        C_FTWOffset_fp2mDDS = 0x1bf487fd #from mdds firmware
 
         REG_CSR = 0
         REG_FR1 = 1
@@ -120,13 +120,12 @@ class mdds(object):
                 ftw_sd = self.m.serialFTW
                 ftw_total = ftw_sd + self.C_FTWOffset_fp2mDDS                
                 print 'FTW SerDes = ', hex(ftw_sd), ' => f = ', self.mdds_ftw2f(ftw_total)
-                ftw = self.m.mddsFTW
+                ftw = self.m.mddsFTW                
                 print 'FTW out    = ', hex(ftw), ' => f = ', self.mdds_ftw2f(ftw)
                 print ''
                 print 'status: mDDS selected (not fpDDS)  = ', bool(self.m.mddsStatus & 0x0001)
                 print 'control: CFP selected (not serDes) = ', bool(self.m.mddsControl & 0x0202)
                 print 'control: control1                  = ', self.m.control1
-
 
         def init_settings(self):
                 print 'Settings'
@@ -171,3 +170,4 @@ class mdds(object):
 
         def __init__(self, slot):
                 self.m = spsFreqProgDDS.Module.slot(slot)
+

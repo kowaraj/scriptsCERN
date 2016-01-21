@@ -53,9 +53,11 @@ class libvmebus(object):
         ]
 
 
-def interpret(value, ctype, swapped):
+def interpret(value, ctype, swapped, fromHardware):
     '''Interpret raw input value as an signed/unsigned integer (according
     to the specified type) and possibly swapped as well (endianess change).
+    Same for the other way (fromHardware): convert a Python integer to
+    the proper raw value for VME.
     '''
 
     unsignedFormatBySize = {
@@ -83,7 +85,10 @@ def interpret(value, ctype, swapped):
     if swapped:
         outputByteOrder = '>'
     if signed:
-        outputFormat = outputFormat.lower()
+        if fromHardware:
+            outputFormat = outputFormat.lower()
+        else:
+            inputFormat = inputFormat.lower()
 
     return struct.unpack(outputByteOrder + outputFormat, struct.pack(inputByteOrder + inputFormat, value))[0]
 
@@ -130,7 +135,7 @@ class VMEMapping(object):
         '''
 
         address = self.pointer(offset, ctype)
-        return [interpret(address[i], ctype, True) for i in range(n)]
+        return [interpret(address[i], ctype, True, True) for i in range(n)]
 
 
     def writeList(self, offset, ctype, values):
@@ -140,7 +145,7 @@ class VMEMapping(object):
         # TODO: check values
         address = self.pointer(offset, ctype)
         for i in range(len(values)):
-            address[i] = interpret(values[i], ctype, True)
+            address[i] = interpret(values[i], ctype, True, False)
 
 
     def read(self, offset, ctype):
@@ -634,50 +639,58 @@ class Module(object):
 
     @property
     def mddsCFPGain(self):
-        return self.mapping.read_u16(0x204)
+        return self.mapping.read_u32(0x204)
 
     @mddsCFPGain.setter
     def mddsCFPGain(self, value):
-        self.mapping.write_u16(0x204, value)
+        self.mapping.write_u32(0x204, value)
 
     @property
     def mddsCFPOffset(self):
-        return self.mapping.read_s16(0x206)
+        return self.mapping.read_s32(0x208)
 
     @mddsCFPOffset.setter
     def mddsCFPOffset(self, value):
-        self.mapping.write_s16(0x206, value)
+        self.mapping.write_s32(0x208, value)
 
     @property
     def mddsDbgADC(self):
-        return self.mapping.read_u16(0x208)
+        return self.mapping.read_u16(0x20c)
+
+    @property
+    def mddsDbgPhErr(self):
+        return self.mapping.read_u32(0x20e)
 
     @property
     def mddsDbgCFP(self):
-        return self.mapping.read_u16(0x20a)
-
-    @property
-    def mddsFTW(self):
-        return self.mapping.read_u32(0x20c)
-
-    @property
-    def mddsPowLevClk125(self):
-        return self.mapping.read_u16(0x210)
-
-    @property
-    def mddsFaults(self):
         return self.mapping.read_u16(0x212)
 
     @property
+    def mddsDbgCFPFTW(self):
+        return self.mapping.read_u32(0x214)
+
+    @property
+    def mddsFTW(self):
+        return self.mapping.read_u32(0x218)
+
+    @property
+    def mddsPowLevClk125(self):
+        return self.mapping.read_u16(0x21c)
+
+    @property
+    def mddsFaults(self):
+        return self.mapping.read_u16(0x21e)
+
+    @property
     def mddsStatus(self):
-        return self.mapping.read_u16(0x214)
+        return self.mapping.read_u16(0x220)
 
     @property
     def mddsControl(self):
-        return self.mapping.read_u16(0x216)
+        return self.mapping.read_u16(0x222)
 
     @mddsControl.setter
     def mddsControl(self, value):
-        self.mapping.write_u16(0x216, value)
+        self.mapping.write_u16(0x222, value)
 
 
