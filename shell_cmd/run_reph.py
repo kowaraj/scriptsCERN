@@ -7,16 +7,25 @@ import shell_cmd as sc
 root = os.path.abspath(os.path.curdir)
 print('current path: ', os.path.abspath(os.path.curdir))
 
+# processes
+
 sc.kill(sc.pid('ALLVTULHC_DU_R'))
 sc.kill(sc.pid('ALLVTULHC_DU_S'))
 sc.kill(sc.pid('ALLSpsRephasingIntfc_DU_R'))
 sc.kill(sc.pid('ALLSpsRephasingIntfc_DU_S'))
 
-sc.run('sudo rm /dev/shm/ALLVTULHC_DU.cfv-864-agsps')
-sc.run('sudo rm /dev/shm/ALLVTU*')
-sc.run('sudo rm /dev/shm/ALLSpsRephasing*')
-sc.run('sudo rm /dev/shm/sem.ALLVTU*')
-sc.run('sudo rm /dev/shm/sem.ALLSpsRephasing*')
+# shared mem
+
+sc.rmshm('ALLVTULHC_DU.cfv-864-agsps')
+sc.rmshm('sem.ALLVTULHC_DU.cfv-864-agsps')
+
+sc.rmshm('ALLVTUClassShm')
+
+sc.rmshm('ALLSpsRephasingIntfcClassShm')
+sc.rmshm('ALLSpsRephasingIntfc_DU.cfv-864-agsps')
+sc.rmshm('sem.ALLSpsRephasingIntfc_DU.cfv-864-agsps')
+
+# restart
 
 os.chdir(os.path.join(os.path.abspath(os.path.curdir),u'ALLVTULHC_DU/src/test/cfv-864-agsps'))
 print('current path: ', os.path.abspath(os.path.curdir))
