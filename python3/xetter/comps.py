@@ -4,12 +4,12 @@ class LBS(Listbox):
 
     def __init__(self, parent, name, elements, cb, sventry=None):
 
-        Listbox.__init__(self, parent, selectmode=MULTIPLE, selectbackground='red')
+        Listbox.__init__(self, parent, selectmode=MULTIPLE, selectbackground='red', exportselection=False)
         self.name = name
         self.parentCallback = cb
         self.sel = []
-        self.selLast = ''
         self.sventry = sventry
+
         for i in range(len(elements)):
             self.insert(i, elements[i])
             self.bind("<<ListboxSelect>>", self.onSelect)  
@@ -21,18 +21,14 @@ class LBS(Listbox):
         print('onSelect of LBS called')
         sender = val.widget
         idx = sender.curselection()
-        value = sender.get(idx)
-        self.selLast = value
+        values = [sender.get(i) for i in idx]
+        print('values = ', values)
 
+        diff = set(values).difference(self.sel) if len(values) > len(self.sel) else set(self.sel).difference(values)
+        last = diff.pop()
+        print('last = ', last)
+        self.sel = values
         if self.sventry:
-            self.sventry.set(value) #display last selected in entry
-
-        if value in self.sel:
-            self.sel.remove(value)
-        else:
-            self.sel.append(value)
-
-        print('onSelect of LBS: calling cb(val)')
-
-        self.parentCallback(self.name, self.sel, value)
+            self.sventry.set(last) #display the last
+        self.parentCallback(self.name, values, last)
 

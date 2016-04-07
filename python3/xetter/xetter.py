@@ -100,7 +100,7 @@ class Face(Frame):
     def __getParameters(self):
 
         prop_str = self.selDict[self.K_DEV_SRC]+'/'+self.selDict[self.K_PROP]
-        input(prop_str)
+        #input(prop_str)
 
         user = self.selDict[self.K_USR_SRC]
         self.pj.setSelector(user)
@@ -119,28 +119,43 @@ class Face(Frame):
 
     def __copyParameters(self):
 
-        prop_str = self.selDict[self.K_DEV_SRC]+'/'+self.selDict[self.K_PROP]
+        prop = self.selDict[self.K_PROP]
+        param = self.selDict[self.K_PARAM]
+        dev_src = self.selDict[self.K_DEV_SRC]
+        dev_dst = self.selDict[self.K_DEV_DST]
+        user_src = self.selDict[self.K_USR_SRC]
+        user_dst = self.selDict[self.K_USR_DST]
+
+        print('copy prop = ', prop)
+        print('copy param = ', param)
+        print('copy dev_src = ', dev_src)
+        print('copy dev_dst = ', dev_dst)
+        print('copy user_src = ', user_src)
+        print('copy user_dst = ', user_dst)
+
+        return
+        
         input('!!!! NIY!!! ')
 
 
-        for p in self.selDict[self.K_PROP]:
-            user = self.selDict[self.K_USR_SRC][0]
+        # for p in self.selDict[self.K_PROP]:
+        #     user = self.selDict[self.K_USR_SRC][0]
             
             
-            for [x,y] in [[x,y] for x in [0,1] for y in range(1,9)] :
-            dev_src = 'SX.RF11-'+str(x)+'-'+str(y)
-            dev_dst = 'SX.RF22-'+str(x)+'-'+str(y)            
-            input('copy? ', p, dev_src, dev_dst, user_src, user_dst)
-            #copy_property(pj, p, dev_src, dev_dst, user_src, user_dst)
+        #     for [x,y] in [[x,y] for x in [0,1] for y in range(1,9)] :
+        #     dev_src = 'SX.RF11-'+str(x)+'-'+str(y)
+        #     dev_dst = 'SX.RF22-'+str(x)+'-'+str(y)            
+        #     input('copy? ', p, dev_src, dev_dst, user_src, user_dst)
+        #     #copy_property(pj, p, dev_src, dev_dst, user_src, user_dst)
 
 
 
-        user = self.selDict[self.K_USR_SRC]
-        pj.setSelector(user)
-        prop_val = pj.getParam(prop_str)
+        # user = self.selDict[self.K_USR_SRC]
+        # pj.setSelector(user)
+        # prop_val = pj.getParam(prop_str)
 
-        self.textDebug.insert(END, str(prop_val))
-        self.__recreateDataFrame(prop_val)
+        # self.textDebug.insert(END, str(prop_val))
+        # self.__recreateDataFrame(prop_val)
 
 
     def __recreateDataFrame(self, data):
