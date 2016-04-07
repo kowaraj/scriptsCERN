@@ -14,6 +14,7 @@ from pyjapc import PyJapc
 from time import sleep
 
 class Face(Frame):
+    TODO: change the structure of the dictionary: dev - acc - class - props - params - values - 
     K_PROP    = 'property'
     K_PARAM   = 'parameter'
     K_DEV_SRC = 'device' #
@@ -51,6 +52,14 @@ class Face(Frame):
         self.__updateQuery()
         self.__updateSelProp()
 
+        if name == self.K_PROP:
+            ds = self.selDict[self.K_DEV_SRC]
+            ps = self.selDict[self.K_PROP]
+            us = self.selDict[self.K_USR_SRC]
+            if len(ds) > 0 and len(ps) > 0 and len(us) > 0:
+                self.__getParameters()
+        
+
 
     def __updateSelProp(self):
         s = self.selDict[self.K_DEV_SRC]+'/'+self.selDict[self.K_PROP]+' @'+self.selDict[self.K_USR_SRC]
@@ -63,7 +72,9 @@ class Face(Frame):
                    '\n property     : ' + ','.join(self.queryDict[self.K_PROP]) +\
                    '\n parameters   : ' + ','.join(self.queryDict[self.K_PARAM]) +\
                    '\n from devices : ' + ','.join(self.queryDict[self.K_DEV_SRC]) +\
-                   '\n for users    : ' + ','.join(self.queryDict[self.K_USR_SRC])
+                   '\n from users   : ' + ','.join(self.queryDict[self.K_USR_SRC]) +\
+                   '\n to devices   : ' + ','.join(self.queryDict[self.K_DEV_DST]) +\
+                   '\n to users     : ' + ','.join(self.queryDict[self.K_USR_DST])
         selectedStr = self.selDict[self.K_DEV_SRC] + self.selDict[self.K_PROP]  + ' @'+self.selDict[self.K_USR_SRC] 
         self.t_cmd.insert(1.0, queryStr)
 
@@ -204,11 +215,10 @@ class Face(Frame):
         f_control = Frame(self, relief=RAISED, height=300, width=200, borderwidth=2, bg='yellow')
         f_control.pack(fill=Y, side=LEFT)
 
+        # Frame - Control - Top
+
         f_control_top = Frame(f_control, relief=RAISED, height=300, width=200, borderwidth=2, bg='cyan')
         f_control_top.pack(fill=Y, side=TOP)
-
-        f_control_bottom= Frame(f_control, relief=RAISED, height=300, width=200, borderwidth=2, bg='magenta')
-        f_control_bottom.pack(fill=Y, side=TOP)
 
         l_selected = Label(f_control_top, textvariable=self.svSelectedProp, width=6)
         l_selected.pack(fill=X, side=TOP, padx=5, pady=5)
@@ -223,6 +233,14 @@ class Face(Frame):
         els = ["NormalMode", "Status", "Mode"]
         self.lbsProperty = LBS(f_control_prop, self.K_PROP, els, self.cbUpdateQuery)
 
+        # Frame - Control - Bottom
+
+        f_control_bottom= Frame(f_control, relief=RAISED, height=300, width=200, borderwidth=2, bg='magenta')
+        f_control_bottom.pack(fill=Y, side=TOP)
+
+        # Frame - Control - Bottom - Current prop data (entry)
+        Label(f_control_bottom, textvariable=self.svSelectedProp).pack(side=TOP, fill=X)
+
         self.f_control_data = Frame(f_control_bottom, relief=RAISED, height=400, width=200, borderwidth=2, bg='blue')
         self.f_control_data.pack(fill=Y, side=TOP)
 
@@ -231,7 +249,7 @@ class Face(Frame):
 
         f_control_cmd = Frame(f_control_top, relief=RAISED, height=400, width=200, borderwidth=2, bg='grey')
         f_control_cmd.pack(fill=X, side=TOP)
-        self.t_cmd = Text(f_control_cmd, height=5)
+        self.t_cmd = Text(f_control_cmd, height=10)
         self.t_cmd.insert(END, "some default text")
         self.t_cmd.pack(side=TOP)
 
@@ -250,7 +268,7 @@ class Face(Frame):
         l_dev.pack(side=TOP, padx=5, pady=5)
 
         # Devices_dst
-        self.lbsDeviceDst = LBS(f_to_dev, self.K_DEV_SRC, self.dbDict[self.K_DEV_SRC], self.cbUpdateQuery)
+        self.lbsDeviceDst = LBS(f_to_dev, self.K_DEV_DST, self.dbDict[self.K_DEV_SRC], self.cbUpdateQuery)
 
         f_to_user = Frame(f_to, relief=RAISED, height=300, width=100, borderwidth=1, bg='blue')
         f_to_user.pack(fill=X)

@@ -24,8 +24,11 @@ class LBS(Listbox):
         values = [sender.get(i) for i in idx]
         print('values = ', values)
 
-        diff = set(values).difference(self.sel) if len(values) > len(self.sel) else set(self.sel).difference(values)
-        last = diff.pop()
+        if len(values) > len(self.sel): # selected
+            last = set(values).difference(self.sel).pop()
+        else: # un-selected
+            last = values[0] if len(values)>0 else 'nothing selected'
+
         print('last = ', last)
         self.sel = values
         if self.sventry:
