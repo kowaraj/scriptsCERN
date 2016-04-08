@@ -2,9 +2,9 @@ from tkinter import *
 
 class LBS(Listbox):
 
-    def __init__(self, parent, name, elements, cb, sventry=None):
+    def __init__(self, parent, name, elements, cb, sventry=None, _sm=MULTIPLE, _sb='red', _es=False, _fi=X):
 
-        Listbox.__init__(self, parent, selectmode=MULTIPLE, selectbackground='red', exportselection=False)
+        Listbox.__init__(self, parent, selectmode=_sm, selectbackground=_sb, exportselection=_es)
         self.name = name
         self.parentCallback = cb
         self.sel = []
@@ -12,8 +12,9 @@ class LBS(Listbox):
 
         for i in range(len(elements)):
             self.insert(i, elements[i])
-            self.bind("<<ListboxSelect>>", self.onSelect)  
-            self.pack(side=TOP)
+        
+        self.bind("<<ListboxSelect>>", self.onSelect)  
+        self.pack(side=TOP,fill=X)
 
 
 
