@@ -25,6 +25,23 @@ class DBDict:
     K_DEV_DST = 'device_dst'
     K_USR_DST = 'user_dst'
 
+'''
+dict = {'devices' : [
+                     { 'name'         : 'VTUFrevAllawake1', 
+                       'class'        : 'ALLVTULHC', 
+                       'fec'          : 'cfv-ba3-allawake3', 
+                       'pers-data'    : 'du-name.class-name', 
+                       'copy-in-file' : 'filename'...'
+                     }
+                     ...
+                    ]
+        'classes' : [
+                     {'name' : 'ALLVTULHC', 'properties' : ['Mode', 'Status', ..], ...
+                     ...
+                    ]
+
+'''
+
     DB_FILENAME = 'db.json'
 
     def __init__(self):
