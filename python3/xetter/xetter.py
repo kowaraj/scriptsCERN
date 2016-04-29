@@ -12,6 +12,8 @@ import json
 
 import tkinter
 from tkinter import *
+from tkinter import messagebox
+
 
 from pyjapc import PyJapc
 from time import sleep
@@ -25,8 +27,8 @@ class DBDict:
     K_DEV_DST = 'device_dst'
     K_USR_DST = 'user_dst'
 
-'''
-dict = {'devices' : [
+    '''
+    dict = {'devices' : [
                      { 'name'         : 'VTUFrevAllawake1', 
                        'class'        : 'ALLVTULHC', 
                        'fec'          : 'cfv-ba3-allawake3', 
@@ -40,7 +42,7 @@ dict = {'devices' : [
                      ...
                     ]
 
-'''
+    '''
 
     DB_FILENAME = 'db.json'
 
@@ -48,6 +50,14 @@ dict = {'devices' : [
 
         with open(self.DB_FILENAME, 'r') as fd:
             self.data = json.loads(fd.read())
+        
+        # with open('sps_users.txt', 'r') as fd:
+        #     for l in fd.readlines():
+        #         self.data[self.K_USR_SRC].append(l.rstrip(' ').rstrip('\n'))
+        # self.__saveDB()
+            
+        print(self.data[self.K_USR_SRC])
+
         
     def srcDev(self):
         return self.data[self.K_DEV_SRC]
@@ -65,12 +75,12 @@ dict = {'devices' : [
             fd.write(json.dumps(self.data))
             fd.close()
         
-    def __updateDB(self):
+    def updateDB(self, name):
         if name in self.data[self.K_DEV_SRC]:
             self.data[self.K_DEV_SRC].remove(name)
         else:
             self.data[self.K_DEV_SRC].append(name)
-        self.__updateSaveDB()
+        self.__saveDB()
 
 class Face(Frame):
     #TODO: change the structure of the dictionary: dev - acc - class - props - params - values - 
@@ -161,7 +171,10 @@ class Face(Frame):
 
     def __addDeviceName(self, e):
         name = e.widget.get()
-        self.db.__updateDB()
+        print('name = ', name)
+        db = self.db
+        print('db =   ', dir(db))
+        db.updateDB(name)
         self.__updateLBS()
 
 
@@ -172,6 +185,7 @@ class Face(Frame):
 
         user = self.selDict[DBDict.K_USR_SRC]
         self.pj.setSelector(user)
+        print('prop_str = ', prop_str)
         prop_val = self.pj.getParam(prop_str)
 
         self.textDebug.insert(END, str(prop_val))
@@ -213,9 +227,7 @@ class Face(Frame):
                     for p in ps:
                         pstr = 'Copying: property ('+ p+ ') from dev@user ('+ srcDev+'@'+srcUser+') to dev@user ('+ dstDev+'@'+dstUser+')'
                         print(pstr)
-                        #tkMessageBox.showinfo("Warning! Are you sure?", pstr)
-                        ret = input(pstr)
-                        if ret != 'yes':
+                        if not tkinter.messagebox.askyesno("Copying...", pstr):
                             continue
                         copy_property(self.pj , p, srcDev, dstDev, srcUser, dstUser)
                 else:
@@ -226,9 +238,7 @@ class Face(Frame):
                     for param in params:
                         pstr = 'Copying: param ('+param+') of property ('+ p+ ') from dev@user ('+ srcDev+'@'+srcUser+') to dev@user ('+ dstDev+'@'+dstUser+')'
                         print(pstr)
-                        #tkMessageBox.showinfo("Warning! Are you sure?", pstr)
-                        ret = input(pstr)
-                        if ret != 'yes':
+                        if not tkinter.messagebox.askyesno("Copying...", pstr):
                             continue
                         copy_param(self.pj , p, param, srcDev, dstDev, srcUser, dstUser)
                         
@@ -240,6 +250,11 @@ class Face(Frame):
             s = k +': '+ str(dataDict[k])
             self.lbsParamData.insert(END, s)
 
+    def __selectAllUsers(self):
+        if self.dstUsrList.size() == len(self.dstUsrList.curselection()): #if all selected
+            self.dstUsrList.selection_clear(0, END)
+        else:
+            self.dstUsrList.select_set(0, END)
 
     def initUI(self):
 
@@ -289,7 +304,8 @@ class Face(Frame):
         f_control_prop.pack(fill=Y, side=TOP)
 
         # Property - listbox
-        els = ["NormalMode", "Status", "Mode"]
+        els = ["NormalMode", "Status", "Mode", "SettingsMDDS", "SettingsSDDS", "Settings", "ExpertSetting", "PulseWidth"]
+
         self.lbsProperty = LBS(f_control_prop, DBDict.K_PROP, els, self.cbUpdateQuery)
 
         # Frame - Control - Bottom
@@ -336,7 +352,8 @@ class Face(Frame):
 
         l_usr = Label(f_to_user, text="Users", width=6)
         l_usr.pack(side=TOP, padx=5, pady=5)
-        Lb_usr = LBS(f_to_user, DBDict.K_USR_DST, self.db.srcUsr(), self.cbUpdateQuery)
+        self.dstUsrList = LBS(f_to_user, DBDict.K_USR_DST, self.db.srcUsr(), self.cbUpdateQuery)
+        Button(f_to_user, text="Select All",command=self.__selectAllUsers).pack(side=LEFT, anchor=N)
 
 
 

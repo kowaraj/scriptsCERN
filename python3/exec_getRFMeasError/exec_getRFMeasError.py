@@ -74,7 +74,7 @@ print(':: selector = ')
 p = PyJapc( selector='', incaAcceleratorName="LHC", noSet=True)
 print(':: p acquired.')
 time.sleep(0.5)
-p.rbacLogin('apashnin', True)
+p.rbacLogin('apashnin', None, True)
 print(':: login done.')
 
 try:
