@@ -205,17 +205,6 @@ class Controller():
                 return u[0]
         raise RuntimeError("User not found: "+ user)
 
-    def update(self, name, val):
-        pass
-        # d = self.data[name]['data']
-        
-        # if val in d:
-        #     d.remove(val)
-        # else:
-        #     d.append(val)
-
-        # self.__data_saveFile()
-
     def __data_loadFile(self):
         pass
         # fd = open(self.DB_FILENAME, 'r')
@@ -244,9 +233,25 @@ class Controller():
         else:
             raise RuntimeError("Unknown dataType requested: "+dataType)
 
-    # def getAcqDataByUsers(self):
-    #     return self.acqData
-        
+    def update(self, dataType, val):
+        print('update = '+dataType)
+        cla = self._query_getClass()
+        if dataType == Settings.DEV:
+            d = self.data[Settings.CLA][cla][Settings.DEV]
+        elif dataType == Settings.CLA:
+            d = self.data[Settings.CLA]
+        elif dataType == Settings.USR:
+            raise RuntimeError("User list cannot be changed")
+        elif dataType == Settings.PROP:
+            d = self.data[Settings.CLA][cla][Settings.PROP]
+        else:
+            raise RuntimeError("Unknown dataType requested to update: "+dataType)
+
+        if val in d:
+            d.remove(val)
+        else:
+            d.append(val)
+
     def getQuery(self):
         return self.query
 
@@ -263,9 +268,11 @@ class Controller():
         else:
             raise RuntimeError('unknown type')
     
-
     def _query_getProperty(self):
         return self.query[Settings.PROP]
+
+    def _query_getClass(self):
+        return self.query[Settings.CLA]
 
     def updateQuery(self, field, val):
         print('updateQuery = '+field+' : '+str(val))

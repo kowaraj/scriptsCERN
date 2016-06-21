@@ -57,21 +57,19 @@ class XFrame(Frame):
 
     LB_HEIGHT = 5
 
-    def __init__(self, parent, name, controller, relief=RAISED, height=200, width=100, borderwidth=2, bg='green', sm=SINGLE):
+    def __init__(self, parent, name, controller, relief=RAISED, height=200, width=100, borderwidth=2, bg='purple', sm=SINGLE):
 
         Frame.__init__(self, parent, relief=relief, height=height, width=width, borderwidth=borderwidth, bg=bg)
 
         self._name = name
         self._parent = parent
         self._controller = controller
-        #d = controller.getData(name)
-        d = self.__data_getData()
 
         print('XF name = '+self._name)
         self._sel = []
 
 
-        self._label = Label(self, text=self._name, width=6)
+        self._label = Label(self, text=self._name, width=15)
         self._label.pack(side=TOP, padx=5, pady=5)
 
         self._tv = StringVar()
@@ -82,15 +80,20 @@ class XFrame(Frame):
 
         self._sm = sm
         self._list = Listbox(self, selectmode=sm, selectbackground='red', exportselection=False, height=self.LB_HEIGHT)
-        print('List: '+ str(len(d)))
-        for i in range(len(d)):
-            print(str(i))
-            self._list.insert(i, d[i])
+        self.__list_populate()
         self._list.bind("<<ListboxSelect>>", self.__list_onSelect)
         self._list.pack(side=TOP, fill=X)
 
         self._button = Button(self, text="Select All", command=self.__buttonSelectAll)
         self._button.pack(side=TOP, anchor=N)
+
+    def __list_populate(self):
+        d = self.__data_getData()
+        print('List: '+ str(d))
+        for i in range(len(d)):
+            print(str(i))
+            self._list.insert(i, d[i])
+
 
     def __data_getData(self):
         d = self._controller.getData(self._name)
@@ -138,18 +141,13 @@ class XFrame(Frame):
         '''
         val = e.widget.get()
         print('__entry_onEnter: '+self._name+' / '+val)
-        self.__updateList(self._name, val)
+        self.__list_updateContent(self._name, val)
 
 
-
-    def __updateList(self, name, value):
+    def __list_updateContent(self, name, value):
         self.__controller_update(value)
-
         self._list.delete(0, END)
-        for x in self.__getData(name):
-            self._list.insert(END, x)
-
-
+        self.__list_populate()
 
 
     def __buttonSelectAll(self):

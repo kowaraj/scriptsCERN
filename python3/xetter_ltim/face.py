@@ -31,15 +31,15 @@ class Face(Frame):
 
         # West panel
 
-        frameW = Frame(self, relief=RAISED, height=600, width=300, borderwidth=2, bg='green')
+        frameW = Frame(self, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray')
         frameW.pack(fill=BOTH, side=LEFT)
-        frame_class = XFrame(frameW, Settings.CLA, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='spring green', sm=SINGLE)
+        frame_class = XFrame(frameW, Settings.CLA, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=SINGLE)
         frame_class.pack(fill=BOTH, side=TOP)
-        frame_devs = XFrame(frameW, Settings.DEV, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='red', sm=SINGLE)
+        frame_devs = XFrame(frameW, Settings.DEV, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=SINGLE)
         frame_devs.pack(fill=BOTH, side=TOP)
-        frame_usrs = XFrame(frameW, Settings.USR, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='blue', sm=MULTIPLE)
+        frame_usrs = XFrame(frameW, Settings.USR, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=MULTIPLE)
         frame_usrs.pack(fill=BOTH, side=TOP)
-        frame_props = XFrame(frameW, Settings.PROP, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='purple', sm=SINGLE)
+        frame_props = XFrame(frameW, Settings.PROP, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=SINGLE)
         frame_props.pack(fill=BOTH, side=TOP)
 
         Button(frameW, text="GET",command=self.__buttonAcquireData).pack(side=LEFT, anchor=N)
