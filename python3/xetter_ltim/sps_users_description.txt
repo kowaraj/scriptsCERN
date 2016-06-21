@@ -1,0 +1,32 @@
+1	ZERO	No Beam
+2	SFTPRO1	Fixed target
+3	SFTPRO2	Fixed target
+4	SFTPRO3	Fixed target
+5	SFTION1	Fixed target with ions
+6	SFTION2	Fixed target with ions
+7	SFTION3	Fixed target with ions
+8	SFTION4	Fixed target with ions
+9	HIRADMT1      High Radiation Material test facility
+10	HIRADMT2      High Radiation Material test facility
+11	LHCPILOT      LHC pilot beam
+12	LHCINDIV      LHC individual physics beam
+13	LHC50NS	      LHC beam 50ns
+14	LHC25NS	      LHC beam 25ns
+15	LHC1	      LHC cycle
+16	LHC2	      LHC cycle
+17	LHC3	      LHC cycle
+18	LHC4	      LHC cycle
+19	AWAKE1	      AWAKE cycle
+20	AWAKE2	      AWAKE cycle
+21	LHCION1	      LHC with ions
+22	LHCION2	      LHC with ions
+23	LHCION3	      LHC with ions
+24	LHCION4	      LHC with ions
+25	LHCMD1	      LHC machine development
+26	LHCMD2	      LHC machine development
+27	LHCMD3	      LHC machine development
+28	LHCMD4	      LHC machine development
+29	MD1	      Machine development
+30	MD2	      Machine development
+31	MD3	      Machine development
+32	MD4	      Machine development
