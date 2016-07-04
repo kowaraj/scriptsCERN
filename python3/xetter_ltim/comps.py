@@ -1,5 +1,60 @@
 from tkinter import *
 
+class ColumnLB(Listbox):
+
+    def __init__(self, parent, _name, _sm=SINGLE, _sbg='magenta', _ex=False, _width=10):
+        Listbox.__init__(self, parent, selectmode=_sm, selectbackground=_sbg, exportselection=_ex, width=_width)
+        self.name = _name
+
+class SetFrame(Frame):
+    '''
+    '''
+    def __init__(self, parent, controller, relief=RAISED, height=200, width=100, borderwidth=2, bg='brown'):
+
+        Frame.__init__(self, parent, relief=relief, height=height, width=width, borderwidth=borderwidth, bg=bg)
+
+        self._parent = parent
+        self._controller = controller
+        self._controller.addCallbackSetFrame(self)
+
+        self._tvLabelSetVal= StringVar()
+        self._labelProp = Label(self, textvariable=self._tvLabelSetVal, width=15)
+        self._labelProp.pack(side=TOP, padx=5, pady=5)
+
+        self._tvEntrySetVal = StringVar()
+        self._eSetVal = Entry(self, textvariable=self._tvEntrySetVal)
+        self._eSetVal.bind("<Return>", self.__eSetVal_onEnter)
+        self._eSetVal.pack(side=TOP, fill=X)
+
+        Button(self, text="SET", command=self.__buttonSetData).pack(side=TOP, anchor=N)
+
+
+    def __buttonSetData(self):
+        print("buttonSetData: " + self._tvEntrySetVal.get())
+        self._controller._setquery_setParameterValue(self._tvEntrySetVal.get())
+        self._controller._driveHardware()
+
+
+    def __eSetVal_onEnter(self, e):
+        val = e.widget.get()
+        print('__eSetVal_onEnter: '+ str(val))
+        print('__eSetVal_onEnter: '+ str(type(val)))
+        self._controller._setquery_setParameterValue(val)
+
+
+    def setFrameCallback(self):
+        self.__updateView()
+
+    def __updateView(self):
+        print('SetFrame: __updateView called')
+
+        q = self._controller.getSetQuery()
+        print('q = ' +str(q))
+        self._tvLabelSetVal.set(str(q['Parameter']))
+        self._tvEntrySetVal.set(str(q['Value']))
+
+
+
 class InfoFrame(Frame):
     '''
     '''
@@ -45,6 +100,7 @@ class InfoFrame(Frame):
         print('__updateView called')
         q = self._controller.getQuery()
         self._tvQuery.set(str(q))
+
         
 
 
@@ -89,9 +145,9 @@ class XFrame(Frame):
 
     def __list_populate(self):
         d = self.__data_getData()
-        print('List: '+ str(d))
+        #print('List: '+ str(d))
         for i in range(len(d)):
-            print(str(i))
+            #print(str(i))
             self._list.insert(i, d[i])
 
 

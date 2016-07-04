@@ -1,7 +1,10 @@
 {"LTIM"   : {"Properties" : ["ExpertSetting", "LoadEvent"],
-             "Devices"  : [ "RFAGSPS1-0-1","RFAGSPS1-0-2","RFAGSPS1-0-3","RFAGSPS1-0-4","RFAGSPS1-0-5","RFAGSPS1-0-6","RFAGSPS1-0-7","RFAGSPS1-0-8","RFAGSPS1-1-1","RFAGSPS1-1-2","RFAGSPS1-1-3","RFAGSPS1-1-4","RFAGSPS1-1-5","RFAGSPS1-1-6","RFAGSPS1-1-7","RFAGSPS1-1-8" ] }, 
+	     "Devices"  : [ "SX.RF8-0-1","SX.RF8-0-2","SX.RF8-0-3","SX.RF8-0-4","SX.RF8-0-5","SX.RF8-0-6","SX.RF8-0-7","SX.RF8-0-8","SX.RF8-1-1","SX.RF8-1-2","SX.RF8-1-3","SX.RF8-1-4","SX.RF8-1-5","SX.RF8-1-6","SX.RF8-1-7","SX.RF8-1-8"]
+}, 
  "ALLVTU" : {"Properties" : ["Mode", "NormalMode"], 
              "Devices"  : ["dummyALLVTUDev1", "dummyALLVTUDev2"] }
 }
+
+
 
 

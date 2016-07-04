@@ -1,6 +1,12 @@
 from pyjapc import PyJapc
 import json
 
+import tkinter
+from tkinter import *
+from tkinter import messagebox
+
+
+
 class Settings():
 
     DEV = 'Devices'
@@ -8,7 +14,8 @@ class Settings():
     PROP = 'Properties'
     CLA = 'Class'
 
-    DBDATA_FILENAME = 'db.json'
+    #DBDATA_FILENAME = 'db_IonBA3LTIM.json'
+    DBDATA_FILENAME = 'db_Lab864LTIM.json'
     SPSUSERS_FILENAME = 'sps_users_description.txt'
 
 class DBData(dict):
@@ -94,6 +101,9 @@ class Controller():
                       Settings.DEV : ['RFAGSPS1-0-1', 'RFAGSPS1-0-2'], 
                       Settings.USR : ['LHC1', 'LHC2', 'LHC3'] }
 
+        self.setquery = {'Parameter' : '',
+                         'Value' : ''}
+
         self._acqData = None #_acqdata_fake_doAcquire()
 
     # @property
@@ -108,16 +118,18 @@ class Controller():
     def _acqdata_doAcquire(self):
         data = AcqData()
 
-        dev = self._query_getDevice()
+        for dev in self._query_getDevices():
 
-        for user in self._query_getUsers():
-            print ('user = '+user)
-            prop = self._query_getProperty()
-            pdata = self.__acquireProp(dev, user, prop)
-            data.addData(dev, user, prop, pdata)
+            for user in self._query_getUsers():
+                print ('user = '+user)
+                prop = self._query_getProperty()
+                pdata = self.__acquireProp(dev, user, prop)
+                data.addData(dev, user, prop, pdata)
+
                 
-        for u in data[dev].keys():
-            print('DONE: ' +str(data[dev][u]))
+            for u in data[dev].keys():
+                print('DONE: ' +str(data[dev][u]))
+
         self._acqData = data
 
     # def _fake__acquireProp(self, aDev, aUser, aProp):
@@ -258,15 +270,13 @@ class Controller():
     def _query_getUsers(self):
         return self.query[Settings.USR]
 
-    def _query_getDevice(self):
+    def _query_getDevices(self):
         ' Takes the first devices only'
         d = self.query[Settings.DEV]
-        if isinstance(d, list):
-            return d[0]
-        elif isinstance(d, str):
-            return d
-        else:
+        if not isinstance(d, list):
             raise RuntimeError('unknown type')
+        return d
+
     
     def _query_getProperty(self):
         return self.query[Settings.PROP]
@@ -282,5 +292,81 @@ class Controller():
 
     def addCallbackInfoFrame(self, infoFrame):
         self.infoFrame = infoFrame
+    def addCallbackSetFrame(self, setFrame):
+        self.setFrame = setFrame
+
+    def _setquery_changed(self):
+        self.setFrame.setFrameCallback()
+
+    def _setquery_setParameter(self, name, val):
+        self.setquery['Parameter'] = name
+        self.setquery['Value'] = val
+        self._setquery_changed()
+
+
+    def getSetQuery(self):
+        return self.setquery
+
+    # def _setquery_setParameterName(self, name):
+    #     self.setquery['Parameter'] = name
+    #     self.setFrame._tvLabelSetVal = name
+    #     print('done')
+    def _setquery_setParameterValue(self, value):
+        self.setquery['Value'] = value
+        self._setquery_changed()
+
+    def _driveHardware(self):
+        print('Writing...\n param: '+ str(self.setquery['Parameter']) + '\n' + 'value: '+ str(self.setquery['Value']))
+        print('read-query:\n param: '+ str(self.query))
+
+        param = self.setquery['Parameter']
+        val = self.setquery['Value']
+
+        devs_ = str(self._query_getDevices())
+        user_ = str(self._query_getUsers())
+        prop_ = str(self._query_getProperty())
+        warning_msg = "Devices:\n"+devs_  \
+                       +"\nUsers:\n"+user_  \
+                       +"\nProperty:\n"+prop_ \
+                       +"\nParameter:\n"+param \
+                       +"\nValue = "+str(val)
+        if not tkinter.messagebox.askyesno("Set?", warning_msg):
+            return
+
+        # Do it...
+        for dev in self._query_getDevices():
+            for user in self._query_getUsers():
+                print ('user = '+user)
+                prop = self._query_getProperty()
+                self.__setParameter(dev, user, prop, param, val)
+
+    def __setParameter(self, aDev, aUser, aProp, aParam, val):
+        '''
+        Do the pyjapc call to the hardware to _write_ the data
+        '''
+        prop_str = aDev + '/' + aProp
+        print('pj: read: '+ prop_str + ' @' + aUser)
+        self.pj.setSelector('SPS.USER.'+aUser)
+        prop_data = self.pj.getParam(prop_str)
+
+        new_prop_data = self.__replaceParamValueInProperty(prop_data, aParam, val)
+
+        input('sure?')
+        self.pj.setSelector('SPS.USER.'+aUser)
+        prop_val = self.pj.setParam(prop_str, new_prop_data)
+        print('done.')
+        
+
+    def __replaceParamValueInProperty(self, prop_data, param, val):
+        print('pj: read: '+str(prop_data))
+        print('pj: read: '+str(type(prop_data)))
+        print('pj: read: param = '+str(param))
+        print('pj: read: param = '+str(val))
+        print('pj: read: param = '+str(type(val)))
+        prop_data[param] = val
+        print('pj: read: '+str(prop_data))
+        return prop_data
+        
+
 
 
