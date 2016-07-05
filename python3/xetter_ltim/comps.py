@@ -143,9 +143,14 @@ class XFrame(Frame):
         self._button = Button(self, text="Select All", command=self.__buttonSelectAll)
         self._button.pack(side=TOP, anchor=N)
 
+    def update(self):
+        print('XFrame.update: '+self._name)
+        self.__list_populate()
+
     def __list_populate(self):
+        self._list.delete(0,END)
         d = self.__data_getData()
-        #print('List: '+ str(d))
+        print('List: '+ str(d))
         for i in range(len(d)):
             #print(str(i))
             self._list.insert(i, d[i])

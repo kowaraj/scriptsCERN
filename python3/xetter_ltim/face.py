@@ -35,12 +35,19 @@ class Face(Frame):
         frameW.pack(fill=BOTH, side=LEFT)
         frame_class = XFrame(frameW, Settings.CLA, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=SINGLE)
         frame_class.pack(fill=BOTH, side=TOP)
+        self.controller.addXFrame(frame_class)
+
         frame_devs = XFrame(frameW, Settings.DEV, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=MULTIPLE)
         frame_devs.pack(fill=BOTH, side=TOP)
+        self.controller.addXFrame(frame_devs)
+
         frame_usrs = XFrame(frameW, Settings.USR, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=MULTIPLE)
         frame_usrs.pack(fill=BOTH, side=TOP)
+        self.controller.addXFrame(frame_usrs)
+
         frame_props = XFrame(frameW, Settings.PROP, self.controller, relief=RAISED, height=600, width=300, borderwidth=2, bg='gray', sm=SINGLE)
         frame_props.pack(fill=BOTH, side=TOP)
+        self.controller.addXFrame(frame_props)
 
         Button(frameW, text="GET",command=self.__buttonAcquireData).pack(side=TOP, anchor=N)
         

@@ -15,7 +15,8 @@ class Settings():
     CLA = 'Class'
 
     #DBDATA_FILENAME = 'db_IonBA3LTIM.json'
-    DBDATA_FILENAME = 'db_Lab864LTIM.json'
+    #DBDATA_FILENAME = 'db_Lab864LTIM.json'
+    DBDATA_FILENAME = 'db.json'
     SPSUSERS_FILENAME = 'sps_users_description.txt'
 
 class DBData(dict):
@@ -105,6 +106,11 @@ class Controller():
                          'Value' : ''}
 
         self._acqData = None #_acqdata_fake_doAcquire()
+        self._xframes = []
+
+
+    def addXFrame(self, f):
+        self._xframes.append(f)
 
     # @property
     # def acqData(self):
@@ -232,7 +238,14 @@ class Controller():
         #     fd.write(json.dumps(self.data))
         #     fd.close()
 
-    def getData(self, dataType, cla="LTIM"):
+    def getClassSelected(self):
+        return self._query_getClass()
+
+    def getData(self, dataType):
+        
+        cla=self.getClassSelected()
+        print('clas = '+str(cla))
+
         print('getData = '+dataType)
         if dataType == Settings.DEV:
             return self.data[Settings.CLA][cla][Settings.DEV]
@@ -289,6 +302,22 @@ class Controller():
         self.query[field] = val
         self.infoFrame.infoFrameCallback()
 
+        if field == Settings.CLA:
+            self.updateXFrameDevices()
+            self.updateXFrameProperties()
+            
+
+    def updateXFrameDevices(self):
+        for f in self._xframes:
+            if f._name == Settings.DEV:
+                f.update()
+
+    def updateXFrameProperties(self):
+        for f in self._xframes:
+            if f._name == Settings.PROP:
+                f.update()
+
+        
 
     def addCallbackInfoFrame(self, infoFrame):
         self.infoFrame = infoFrame
