@@ -263,8 +263,17 @@ class Controller():
         cla = self._query_getClass()
         if dataType == Settings.DEV:
             d = self.data[Settings.CLA][cla][Settings.DEV]
-        elif dataType == Settings.CLA:
+
+        elif dataType == Settings.CLA: # special case for classes (as it's a dict, not a list)
             d = self.data[Settings.CLA]
+            if val in d:
+                del d[val]
+            else:
+                d[val] = {Settings.DEV : ["dummyDev0"], Settings.PROP : ["dummyProp0"]}
+
+            self.__saveDB()
+            return 
+
         elif dataType == Settings.USR:
             raise RuntimeError("User list cannot be changed")
         elif dataType == Settings.PROP:
@@ -277,6 +286,17 @@ class Controller():
         else:
             d.append(val)
 
+        self.__saveDB()
+
+
+    def __saveDB(self):
+        import shutil
+        shutil.move(Settings.DBDATA_FILENAME, Settings.DBDATA_FILENAME+'.bak')
+        with open(Settings.DBDATA_FILENAME, 'w') as fd:
+            fd.write(json.dumps(self.data[Settings.CLA]))
+            fd.close()
+
+                                                                
     def getQuery(self):
         return self.query
 

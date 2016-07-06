@@ -115,13 +115,13 @@ class Face(Frame):
         # Populate the frame with Listboxes:
 
         # First ListBox for the names of Device
-        lb0 = Listbox(self.frameData, selectmode=SINGLE, selectbackground='gray', exportselection=False, width=10)
+        lb0 = Listbox(self.frameData, selectmode=SINGLE, selectbackground='gray', exportselection=False, width=15)
         lb0.bind("<<ListboxSelect>>", self.__list_lb0_onSelect)
         lb0.pack(side=LEFT, fill=Y)
         self.listDict['LB0'] = lb0
 
         # Second ListBox for the names of User
-        lb00 = Listbox(self.frameData, selectmode=SINGLE, selectbackground='gray', exportselection=False, width=7)
+        lb00 = Listbox(self.frameData, selectmode=SINGLE, selectbackground='gray', exportselection=False, width=10)
         lb00.bind("<<ListboxSelect>>", self.__list_lb00_onSelect)
         lb00.pack(side=LEFT, fill=Y)
         self.listDict['LB00'] = lb00

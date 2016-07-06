@@ -19,7 +19,7 @@ class SetFrame(Frame):
 
         self._tvLabelSetVal= StringVar()
         self._labelProp = Label(self, textvariable=self._tvLabelSetVal, width=15)
-        self._labelProp.pack(side=TOP, padx=5, pady=5)
+        self._labelProp.pack(side=TOP, fill=X, padx=5, pady=5)
 
         self._tvEntrySetVal = StringVar()
         self._eSetVal = Entry(self, textvariable=self._tvEntrySetVal)
