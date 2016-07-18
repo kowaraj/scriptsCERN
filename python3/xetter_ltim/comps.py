@@ -26,12 +26,20 @@ class SetFrame(Frame):
         self._eSetVal.bind("<Return>", self.__eSetVal_onEnter)
         self._eSetVal.pack(side=TOP, fill=X)
 
+        self._tvEntrySetType = StringVar()
+        self._eSetType = Entry(self, textvariable=self._tvEntrySetType)
+        self._eSetType.bind("<Return>", self.__eSetType_onEnter)
+        self._eSetType.pack(side=TOP, fill=X)
+
         Button(self, text="SET", command=self.__buttonSetData).pack(side=TOP, anchor=N)
 
 
     def __buttonSetData(self):
         print("buttonSetData: " + self._tvEntrySetVal.get())
+        vtype = self._tvEntrySetType.get()
+        print("buttonSetType: " + vtype)
         self._controller._setquery_setParameterValue(self._tvEntrySetVal.get())
+        self._controller._setquery_setParameterType(vtype)
         self._controller._driveHardware()
 
 
@@ -40,6 +48,12 @@ class SetFrame(Frame):
         print('__eSetVal_onEnter: '+ str(val))
         print('__eSetVal_onEnter: '+ str(type(val)))
         self._controller._setquery_setParameterValue(val)
+
+    def __eSetType_onEnter(self, e):
+        val = e.widget.get()
+        print('__eSetType_onEnter: '+ str(val))
+        print('__eSetType_onEnter: '+ str(type(val)))
+        self._controller._setquery_setParameterType(val)
 
 
     def setFrameCallback(self):
@@ -52,6 +66,7 @@ class SetFrame(Frame):
         print('q = ' +str(q))
         self._tvLabelSetVal.set(str(q['Parameter']))
         self._tvEntrySetVal.set(str(q['Value']))
+        self._tvEntrySetType.set(str(q['Type']))
 
 
 

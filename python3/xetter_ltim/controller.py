@@ -103,7 +103,8 @@ class Controller():
                       Settings.USR : ['LHC1', 'LHC2', 'LHC3'] }
 
         self.setquery = {'Parameter' : '',
-                         'Value' : ''}
+                         'Value' : '', 
+                         'Type' : ''}
 
         self._acqData = None #_acqdata_fake_doAcquire()
         self._xframes = []
@@ -364,12 +365,17 @@ class Controller():
         self.setquery['Value'] = value
         self._setquery_changed()
 
+    def _setquery_setParameterType(self, vtype):
+        self.setquery['Type'] = vtype
+        self._setquery_changed()
+
     def _driveHardware(self):
         print('Writing...\n param: '+ str(self.setquery['Parameter']) + '\n' + 'value: '+ str(self.setquery['Value']))
         print('read-query:\n param: '+ str(self.query))
 
         param = self.setquery['Parameter']
         val = self.setquery['Value']
+        vtype = self.setquery['Type']
 
         devs_ = str(self._query_getDevices())
         user_ = str(self._query_getUsers())
@@ -378,7 +384,9 @@ class Controller():
                        +"\nUsers:\n"+user_  \
                        +"\nProperty:\n"+prop_ \
                        +"\nParameter:\n"+param \
-                       +"\nValue = "+str(val)
+                       +"\nValue = "+str(val) \
+                       +"\nType = "+str(vtype)
+
         if not tkinter.messagebox.askyesno("Set?", warning_msg):
             return
 
@@ -387,33 +395,49 @@ class Controller():
             for user in self._query_getUsers():
                 print ('user = '+user)
                 prop = self._query_getProperty()
-                self.__setParameter(dev, user, prop, param, val)
+                self.__setParameter(dev, user, prop, param, val, vtype)
 
-    def __setParameter(self, aDev, aUser, aProp, aParam, val):
+    def __setParameter(self, aDev, aUser, aProp, aParam, val, vtype='int'):
         '''
         Do the pyjapc call to the hardware to _write_ the data
         '''
         prop_str = aDev + '/' + aProp
-        print('pj: read: '+ prop_str + ' @' + aUser)
+        #print('pj: read: '+ prop_str + ' @' + aUser)
         self.pj.setSelector('SPS.USER.'+aUser)
         prop_data = self.pj.getParam(prop_str)
+        
+        # prop_types = self.pj.getParamInfo(prop_str)
+        # print('types = '+str(prop_types))
 
-        new_prop_data = self.__replaceParamValueInProperty(prop_data, aParam, val)
+        new_prop_data = self.__replaceParamValueInProperty(prop_data, aParam, val, vtype)
 
-        input('sure?')
+        #input('sure?')
         self.pj.setSelector('SPS.USER.'+aUser)
         prop_val = self.pj.setParam(prop_str, new_prop_data)
         print('done.')
         
 
-    def __replaceParamValueInProperty(self, prop_data, param, val):
-        print('pj: read: '+str(prop_data))
-        print('pj: read: '+str(type(prop_data)))
-        print('pj: read: param = '+str(param))
-        print('pj: read: param = '+str(val))
-        print('pj: read: param = '+str(type(val)))
-        prop_data[param] = val
-        print('pj: read: '+str(prop_data))
+    def __replaceParamValueInProperty(self, prop_data, param, val, vtype='int'):
+        # print('pj: read: '+str(prop_data))
+        # print('pj: read: '+str(type(prop_data)))
+        # print('pj: read: param = '+str(param))
+        # print('pj: read: param = '+str(val))
+        # print('pj: read: param = '+str(type(val)))
+        if vtype == '':
+            converted_val = int(val)
+        elif vtype == 'int':
+            converted_val = int(val)
+        elif vtype == 'float':
+            converted_val = float(val)
+        elif vtype == 'bool':
+            converted_val = bool(val)
+        elif vtype == 'str':
+            converted_val = str(val)
+        else:
+            raise RuntimeError("Only [int,float,bool,str] types allowed")
+
+        prop_data[param] = converted_val
+        # print('pj: read: '+str(prop_data))
         return prop_data
         
 
