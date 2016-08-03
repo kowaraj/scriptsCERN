@@ -15,8 +15,8 @@ class Settings():
     CLA = 'Class'
 
     #DBDATA_FILENAME = 'db_IonBA3LTIM.json'
-    #DBDATA_FILENAME = 'db_Lab864LTIM.json'
-    DBDATA_FILENAME = 'db.json'
+    DBDATA_FILENAME = 'db_Lab864LTIM.json'
+    #DBDATA_FILENAME = 'db.json'
     SPSUSERS_FILENAME = 'sps_users_description.txt'
 
 class DBData(dict):
@@ -97,7 +97,7 @@ class Controller():
         self.pj = PyJapc(selector='will be set later', incaAcceleratorName="SPS", noSet=False)
 
         self.data = self.dbdata
-        self.query = {Settings.CLA : 'LTIM', 
+        self.query = {Settings.CLA : 'ALLVTU', 
                       Settings.PROP : 'ExpertSetting', 
                       Settings.DEV : ['RFAGSPS1-0-1', 'RFAGSPS1-0-2'], 
                       Settings.USR : ['LHC1', 'LHC2', 'LHC3'] }
