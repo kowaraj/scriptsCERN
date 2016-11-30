@@ -1,0 +1,32 @@
+[
+    [
+        "adcGain",
+        "int32",
+        "30"
+    ],
+    [
+        "cfpGain",
+        "int32",
+        "998200"
+    ],
+    [
+        "cfpOffset",
+        "int32",
+        "920767342"
+    ],
+    [
+        "serdesFTWGain",
+        "int32",
+        "7263"
+    ],
+    [
+        "serdesFTWOffset",
+        "int32",
+        "1660348829"
+    ],
+    [
+        "selFrevX4",
+        "bool",
+        "false"
+    ]
+]

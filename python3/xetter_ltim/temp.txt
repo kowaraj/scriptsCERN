@@ -1,0 +1,1 @@
+{"Users": ["dummyUser1", "dummyUser2", "dummyUser3"], "Class": {"LTIM": {"Properties": ["ExpertSetting", "LoadEvent"], "Devices": ["dummyLTIMDev1", "dummyLTIMDev2", "dummyLTIMDev3"]}, "ALLVTU": {"Properties": ["Mode", "NormalMode"], "Devices": ["dummyALLVTUDev1", "dummyALLVTUDev2"]}}}

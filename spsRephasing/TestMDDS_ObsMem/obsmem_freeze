@@ -1,0 +1,36 @@
+#!/user/mojedasa/python/Python-2.7.11/python
+
+import sys
+import time
+if len(sys.argv) != 2:
+	print "Argument missing: slotNumber"
+        print "e.g.: ", sys.argv[0], "5"
+	exit(0)
+else:
+	msg = "MasterDDS is in slot " + str(int(sys.argv[1])) #+ "? (y/n)"
+        # if raw_input(msg) != 'y':
+        #         print "Canceled."
+        #         exit(0)
+
+
+
+import mdds
+slot = int(sys.argv[1])
+mod = mdds.mdds(slot)
+import spsFreqProgDDS
+
+
+print '========================================'
+print 'Access MasterDDS Obs memory'
+m = spsFreqProgDDS.Module.slot(slot)
+print 'acq status   = ', hex(m.acqStatus)
+print 'acq frzaddr  = ', m.acqFrzAddr
+print 'acq control  = ', m.acqControl
+
+
+print 'freeze mem'
+m.acqControl = 0x8080
+
+print 'acq status   = ', hex(m.acqStatus)
+print 'acq frzaddr  = ', m.acqFrzAddr
+print 'acq control  = ', m.acqControl

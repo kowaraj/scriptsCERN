@@ -1,0 +1,22 @@
+[
+    [
+        "offsetForZCDetector",
+        "float",
+        "50.000"
+    ],
+    [
+        "bufSize",
+        "int32",
+        "100"
+    ],
+    [
+        "maxFreqError",
+        "double",
+        "10000.000000"
+    ],
+    [
+        "deviation",
+        "int32",
+        "5"
+    ]
+]

@@ -1,0 +1,22 @@
+#!/user/mojedasa/python/Python-2.7.11/python
+
+import sys
+if len(sys.argv) != 2:
+	print "Argument missing: slotNumber"
+        print "e.g.: ", sys.argv[0], "5"
+	exit(0)
+else:
+	msg = "Reading MasterDDS in slot " + str(int(sys.argv[1]))
+
+
+
+import mdds
+slot = int(sys.argv[1])
+mod = mdds.mdds(slot)
+
+print '========================================'
+print 'Read status of MasterDDS'
+mod.read_settings()
+
+print 'Done'
+

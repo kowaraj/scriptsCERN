@@ -15,8 +15,8 @@ class Settings():
     CLA = 'Class'
 
     #DBDATA_FILENAME = 'db_IonBA3LTIM.json'
-    DBDATA_FILENAME = 'db_Lab864LTIM.json'
-    #DBDATA_FILENAME = 'db.json'
+    #DBDATA_FILENAME = 'db_Lab864LTIM.json'
+    DBDATA_FILENAME = 'db.json'
     SPSUSERS_FILENAME = 'sps_users_description.txt'
 
 class DBData(dict):

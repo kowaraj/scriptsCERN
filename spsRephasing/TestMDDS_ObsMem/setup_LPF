@@ -1,0 +1,75 @@
+#!/user/mojedasa/python/Python-2.7.11/python
+
+import sys
+import time
+if len(sys.argv) < 2:
+	print "Argument missing: slotNumber"
+        print "e.g.: ", sys.argv[0], "5"
+	exit(0)
+else:
+	msg = "MasterDDS is in slot " + str(int(sys.argv[1])) + "? (y/n)"
+        if raw_input(msg) != 'y':
+                print "Canceled."
+                exit(0)
+
+
+slot = int(sys.argv[1])
+# import mdds
+# mod = mdds.mdds(slot)
+
+import spsFreqProgDDS
+m = spsFreqProgDDS.Module.slot(slot)
+
+print '========================================'
+if int(sys.argv[2]) == 1:
+        print 'filter 1. f2 disabled'
+        m.mddsLPFControl2 = 0x4040 # disable the filter #2
+
+        m.mddsLPFTestFTW1 = 0x1a000000
+        m.mddsLPFTestFTW2 = 0x19000000
+        
+        m.mddsLPFControl = 0x0F0a # setup gain, K=0, bits 3:0
+        m.mddsLPFControl = 0x1010 # sel min Tau, bit 4
+        m.mddsLPFControl = 0x2000 # ena Test mode, bit 5
+        m.mddsLPFControl = 0x4000 # disable the filter, bit6
+
+
+elif int(sys.argv[2]) == 2:
+        print 'filter 2. f1 disabled'
+        m.mddsLPFControl = 0x4040 # disable the filter #1
+
+        m.mddsLPFTestFTW1 = 0x35000000 #0x35cfafcb #0x1976ed9a #0x19990000
+        m.mddsLPFTestFTW2 = 0x37000000 #0x35cfafcb #0x1976ed9a #0x19998000 # + 0x8000
+
+        m.mddsLPFControl2 = 0x0F00 # setup gain, K=0, bits 3:0
+        m.mddsLPFControl2 = 0x1000 # sel min Tau, bit 4
+        m.mddsLPFControl2 = 0x2000 # ena Test mode, bit 5
+        m.mddsLPFControl2 = 0x4000 # disable the filter, bit6
+
+elif int(sys.argv[2]) == 3:
+        print 'filter 1 and 2 enabled'
+        m.mddsLPFControl  = 0x4000 # disable the filter #1
+        m.mddsLPFControl2 = 0x4000 # disable the filter #1
+
+elif int(sys.argv[2]) == 61:
+        print 'filter 2 - test mode. f1 disabled'
+        m.mddsLPFControl = 0x4040 # disable the filter #1
+
+        m.mddsLPFTestFTW1 = 0x3438358c # 0x35000000 #0x35cfafcb #0x1976ed9a #0x19990000
+        m.mddsLPFTestFTW2 = 0x343849ae # 0x37000000 #0x35cfafcb #0x1976ed9a #0x19998000 # + 0x8000
+
+        m.mddsLPFControl2 = 0x0F00 # setup gain, K=0, bits 3:0
+        m.mddsLPFControl2 = 0x1000 # sel min Tau, bit 4
+        m.mddsLPFControl2 = 0x2020 # ena Test mode, bit 5
+        m.mddsLPFControl2 = 0x4000 # disable the filter, bit6
+
+else:
+        m.mddsLPFControl  = 0x4040 # disable the filter #1
+        m.mddsLPFControl2 = 0x4040 # disable the filter #2
+
+print 'done.'
+
+
+
+
+

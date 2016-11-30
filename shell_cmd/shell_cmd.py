@@ -13,7 +13,17 @@ def run_bg(cmd_str):
     ''' Run command on background, stderr isn't redirected
     '''
     if 'y' == raw_input('execute? ' + str(cmd_str.split(' '))):
-        p = Popen(cmd_str.split(' '), stdout=PIPE, stderr=None)
+        FNULL = open(os.devnull, 'w')
+        p = Popen(cmd_str.split(' '), stdout=FNULL, stderr=FNULL) 
+        
+    else:
+        print('skipped')
+
+def run_bg_broken(cmd_str):
+    ''' Run command on background, stderr isn't redirected
+    '''
+    if 'y' == raw_input('execute? ' + str(cmd_str.split(' '))):
+        p = Popen(cmd_str.split(' '), stdout=None, stderr=None) # !!! get's stuck with PIPE
         
     else:
         print('skipped')
@@ -48,6 +58,7 @@ def shmexist(name):
     output, err = p.communicate()
     for line in output.split('\n'):
         if name in line:
+            print('Shmem exist: ', name)
             return True
     return False
 

@@ -1,0 +1,27 @@
+[
+    [
+        "rfOnOffset",
+        "int32",
+        "70"
+    ],
+    [
+        "rfOffOffset",
+        "int32",
+        "1020"
+    ],
+    [
+        "phaseOffset",
+        "int32",
+        "1020"
+    ],
+    [
+        "selH4653",
+        "bool",
+        "false"
+    ],
+    [
+        "selFrevX4",
+        "bool",
+        "false"
+    ]
+]

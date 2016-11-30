@@ -1,0 +1,56 @@
+#!/user/mojedasa/python/Python-2.7.11/python
+
+import sys
+import time
+if len(sys.argv) < 2:
+	print "Argument missing: slotNumber"
+        print "e.g.: ", sys.argv[0], "5"
+	exit(0)
+else:
+	msg = "MasterDDS is in slot " + str(int(sys.argv[1])) + "? (y/n)"
+        if raw_input(msg) != 'y':
+                print "Canceled."
+                exit(0)
+
+
+slot = int(sys.argv[1])
+# import mdds
+# mod = mdds.mdds(slot)
+
+import spsFreqProgDDS
+m = spsFreqProgDDS.Module.slot(slot)
+
+print '========================================'
+if int(sys.argv[2]) == 0:
+        print 'Disable SWG TestMode'
+        m.mddsControl = 0x4000 # do not enable SWG test mode
+
+elif int(sys.argv[2]) == 1:
+        print 'Enable SWG TestMode'
+        m.mddsControl = 0x4040 # enable SWG test mode
+
+        ftw1 = 0x1a000000
+        ftw2 = 0x19000000
+        # ftw1 = 0x35000000
+        # ftw2 = 0x37000000
+        ts   = 50*50 - 1 # 20ns * 50 * 50
+
+        if len(sys.argv) > 3:
+                ftw1 = int(sys.argv[3], 16)
+                ftw2 = int(sys.argv[4], 16)
+                ts = int(sys.argv[5])
+
+        m.mddsTestFTW1 = ftw1
+        m.mddsTestFTW2 = ftw2
+        m.mddsTestTs   = ts
+
+else:
+        print 'Disable SWG TestMode'
+        m.mddsControl = 0x4000 # do not enable SWG test mode
+
+print 'done.'
+
+
+
+
+

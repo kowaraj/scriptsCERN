@@ -1,0 +1,32 @@
+[
+    [
+        "trigSelWinClk",
+        "int32",
+        "15"
+    ],
+    [
+        "trigSelRestart",
+        "int32",
+        "15"
+    ],
+    [
+        "trigSelStart",
+        "int32",
+        "3"
+    ],
+    [
+        "trigSelStop",
+        "int32",
+        "15"
+    ],
+    [
+        "trigSelRFMeasStart",
+        "int32",
+        "15"
+    ],
+    [
+        "trigSelRFMeasStop",
+        "int32",
+        "15"
+    ]
+]

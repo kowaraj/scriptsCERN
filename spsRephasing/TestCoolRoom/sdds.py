@@ -6,12 +6,12 @@ print 'cs.init_module(6)'
 
 '''
 - 20160111 - fixed FTW_AVG from 200 to 200.22
-
+'''
 print 's.setup_dds_freq("RF1", 200, 205, 210, 215)'
 print 's.setup_dds_freq("RF2", 202, 207, 212, 217)'
 print 'import spsSlaveDDSMap'
 print 'm = spsSlaveDDSMap.Module.slot(6)'
-'''
+
 
 
 '''
@@ -88,28 +88,88 @@ class sdds(object):
                 else:
                         print 'Select DDS sync to be BPFrev: control1 = 0x0200 (b1)'
                         self.m.control1 = 0x0200 #bit1
+
         def _doSyncDDSToFpFrev(self):
                 self._enaVmeAccessToDDS(1)
-                #self._selDDSDataSource(0) # to VME
                 self._selFpFrevAsDDSClock(1)
                 self.send_to_dds(0x00000080, self.REG_FR2)
                 self._doUpdateDDSIO()
                 self.send_to_dds(0x00000000, self.REG_FR2)
                 self._doUpdateDDSIO()
                 self._enaVmeAccessToDDS(0)
-                #self._selDDSDataSource(1) # to FPGA
 
-        def _selDDSSignals(self, x):
-                if x == 1:
-                        print 'real'
-                        self.m.debugControl2 = 0x0404
-                else:
-                        print 'fake'
-                        self.m.debugControl2 = 0x0400
+        def _doSyncDDSToFpFrevDisable(self):
+                self._enaVmeAccessToDDS(1)
+                self.send_to_dds(0x00000000, self.REG_FR2)
+                self._doUpdateDDSIO()
+                self._enaVmeAccessToDDS(0)
+        def _doSyncDDSToFpFrevEnable(self):
+                self._enaVmeAccessToDDS(1)
+                self.send_to_dds(0x00000080, self.REG_FR2)
+                self._doUpdateDDSIO()
+                self._enaVmeAccessToDDS(0)
 
-        def _strobeIntfcReady(self):
-                print 'strobe to IntfcReady'
-                self.m.debugControl2 = 0x0808
+        def _loop_doSyncDDSToFpFrevEnable(self):
+                while(1):
+                        self._enaVmeAccessToDDS(1)
+                        self.send_to_dds(0x00000080, self.REG_FR2)
+                        #self._doUpdateDDSIO()
+                        self._enaVmeAccessToDDS(0)
+                        sleep(0.1)
+                        print('done')
+
+        def _loop_SC_Init_AutoSync_DDSIO(self):
+                while(1):
+                        sleep(0.5)
+                        print('Start SC')
+                        self.init_module()
+                        #print('Wait for 0.1s...')
+                        sleep(0.1)
+                        #print('Sync 1/4 Divider')
+                        self._doSyncDDSToFpFrev_plusFTW()
+                        #print('Done\n')
+
+
+        def _doSyncDDSToFpFrev_plusFTW(self):
+                self._enaVmeAccessToDDS(1)
+
+                self._selFpFrevAsDDSClock(1)
+                self.send_to_dds(0x00000080, self.REG_FR2)
+                self._doUpdateDDSIO()
+                self.send_to_dds(0x00000000, self.REG_FR2)
+                self._doUpdateDDSIO()
+
+                sleep(0.05)
+                self.setup_dds_ch1() # RF1 = AVG
+                self.setup_dds_freq_avg()
+                self.setup_dds_ch0() # RF2 = FSK
+                self.setup_dds_freq_avg()
+                self._doUpdateDDSIO()
+                sleep(0.05)
+                self._enaVmeAccessToDDS(0)
+
+
+
+
+
+
+
+
+
+
+
+
+        # def _selDDSSignals(self, x):
+        #         if x == 1:
+        #                 print 'real'
+        #                 self.m.debugControl2 = 0x0404
+        #         else:
+        #                 print 'fake'
+        #                 self.m.debugControl2 = 0x0400
+
+        # def _strobeIntfcReady(self):
+        #         print 'strobe to IntfcReady'
+        #         self.m.debugControl2 = 0x0808
 
         def _enaVmeAccessToDDS(self, x):
                 if x == 1:
@@ -153,7 +213,8 @@ class sdds(object):
         def reset_dds(self):
                 print 'Reset DDS'
                 self.m.ddsControl = self.ddsControl_reset
-                sleep(0.5)
+                print 'Wait for 0.1s'
+                sleep(0.1)
 
         def clear_phase_acc(self):
                 self.send_to_dds(0x00002000, self.REG_FR2)
@@ -257,6 +318,7 @@ class sdds(object):
                 self.m.debugControl2 = 0x0101; #debug on
                 self.m.debugFpSLFTW1 = ftw #data
                 self.m.debugControl = 0x0202 #strobe
+                print 'debugC2.selFpSLink =     ', bool(self.m.debugControl2 & 0x0001)
                 self.m.debugControl2 = 0x0100; #debug off
 
         def stat(self):
@@ -266,6 +328,9 @@ class sdds(object):
                 print 'clearing faults'
                 self.m.control1 = 0x0101
                 self.m.debugControl = 0x0101
+                print 'Frev offset   = ', self.m.frevPhaseOffset
+                print 'RF_ON offset  = ', self.m.rfOnOffset
+                print 'RF_OFF offset = ', self.m.rfOffOffset
                 
         def status(self):
                 print 'debugFTW1 =       ', hex(self.m.debugFTW1)
@@ -303,6 +368,7 @@ class sdds(object):
                 # print 'faults.noFrev = (!)  ', bool(self.m.faults & 0x0200) 
                 
         def controls(self):
+                print 'ddsControl             = ', hex(self.m.ddsControl)
                 print 'control1.selSyncFpFrev = ', bool(self.m.control1 & 0x0002)
                 print 'ddsControl.enaVme =      ', bool(self.m.ddsControl & 0x0008)
                 print 'debugC2.selFpSLink =     ', bool(self.m.debugControl2 & 0x0001)
@@ -333,7 +399,6 @@ class sdds(object):
 
                 self.reset_dds()
                 self.setup_dds_ch1() # RF1 = AVG
-                #self.setup_dds_freq(200.22, 200.22, 200.22, 200.22)
                 self.setup_dds_freq_avg()
                 self.setup_dds_ch0() # RF2 = FSK
                 self.setup_dds_freq_avg()

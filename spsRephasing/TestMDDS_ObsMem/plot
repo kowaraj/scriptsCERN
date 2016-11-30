@@ -1,0 +1,62 @@
+#!/usr/bin/python
+
+import argparse
+import os
+import subprocess
+import sys
+import time
+import operator
+import re
+
+
+#import numpy
+#import ndarray
+
+#TODO: plot to see the monotonicity of the freq meas (by counter)
+
+###########################        
+
+import pylab as pl
+import numpy as np
+
+f = open('dump', 'r')
+
+
+d = list()
+for l in f.readlines():
+    d.append(int(l))
+print 'size of file1 = ', len(d)
+
+#plot
+pl.plot(d)
+pl.show()
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+
+                
+                
+            
+
+
+
+        
+
+
+
+
+
+
+
